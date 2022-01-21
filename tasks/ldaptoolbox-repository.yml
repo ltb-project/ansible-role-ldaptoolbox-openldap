@@ -1,0 +1,19 @@
+---
+# tasks file for ansible-role-ldaptoolbox-openldap
+
+- name: debian repository
+  block:
+
+  - name: fetch repository key
+    ansible.builtin.shell: "curl {{ ldaptoolbox_openldap_apt_key_url }} | gpg --dearmor > {{ ldaptoolbox_openldap_apt_keyrings_path }}/{{ ldaptoolbox_openldap_apt_repo_filename }}.gpg"
+
+  - name: add repository
+    ansible.builtin.apt_repository:
+      repo: "{{ ldaptoolbox_openldap_apt_repo }}"
+      filename: "{{ ldaptoolbox_openldap_apt_repo_filename }}"
+      update_cache: yes
+      state: present
+
+  when:
+  - ansible_os_family == "Debian"
+

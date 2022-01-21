@@ -1,0 +1,164 @@
+dn: cn=config
+objectClass: olcGlobal
+cn: config
+olcConfigFile: slapd.conf
+olcConfigDir: slapd.d
+olcArgsFile: /usr/local/openldap/var/run/slapd.args
+olcAttributeOptions: lang-
+olcAuthzPolicy: none
+olcConcurrency: 0
+olcConnMaxPending: 100
+olcConnMaxPendingAuth: 1000
+olcGentleHUP: FALSE
+olcIdleTimeout: 0
+olcIndexSubstrIfMaxLen: 4
+olcIndexSubstrIfMinLen: 2
+olcIndexSubstrAnyLen: 4
+olcIndexSubstrAnyStep: 2
+olcIndexIntLen: 4
+olcListenerThreads: 1
+olcLocalSSF: 71
+olcPidFile: /usr/local/openldap/var/run/slapd.pid
+olcReadOnly: FALSE
+olcSaslHost: {{ ldaptoolbox_openldap_olcSaslHost }}
+olcSaslSecProps: none
+olcServerID: 1
+olcSockbufMaxIncoming: 262143
+olcSockbufMaxIncomingAuth: 16777215
+olcThreads: 16
+olcTLSCACertificateFile: {{ ldaptoolbox_openldap_olcTLSCACertificateFile }}
+olcTLSCertificateFile:  {{ ldaptoolbox_openldap_olcTLSCertificateFile }}
+olcTLSCertificateKeyFile: {{ ldaptoolbox_openldap_olcTLSCertificateKeyFile }}
+olcTLSCRLCheck: none
+olcTLSVerifyClient: allow
+olcTLSProtocolMin: {{ ldaptoolbox_openldap_olcTLSProtocolMin }}
+olcToolThreads: 1
+olcWriteTimeout: 0
+olcLogLevel: {{ ldaptoolbox_openldap_olcLogLevel }}
+
+dn: cn=module{0},cn=config
+objectClass: olcModuleList
+cn: module{0}
+olcModulePath: /usr/local/openldap/lib64/:/usr/local/openldap/libexec/openldap/
+{% for module in ldaptoolbox_openldap_module_list %}
+olcModuleLoad: {{ module }}
+{% endfor %}
+
+dn: cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: schema
+
+include: file:///usr/local/openldap/etc/openldap/schema/core.ldif
+
+include: file:///usr/local/openldap/etc/openldap/schema/cosine.ldif
+
+include: file:///usr/local/openldap/etc/openldap/schema/nis.ldif
+
+include: file:///usr/local/openldap/etc/openldap/schema/inetorgperson.ldif
+
+include: file:///usr/local/openldap/etc/openldap/schema/dyngroup.ldif
+
+{% for schema in ldaptoolbox_openldap_custom_schema_list %}
+include: file://{{ ldaptoolbox_openldap_schema_dir }}/{{ schema }}
+{% endfor %}
+
+dn: olcDatabase={-1}frontend,cn=config
+objectClass: olcDatabaseConfig
+objectClass: olcFrontendConfig
+olcDatabase: {-1}frontend
+{% for rule in ldaptoolbox_openldap_access_list %}
+olcAccess: {{ rule }}
+{% endfor %}
+olcAddContentAcl: FALSE
+olcLastMod: TRUE
+olcMaxDerefDepth: 0
+olcReadOnly: FALSE
+olcSchemaDN: cn=Subschema
+olcSecurity: ssf=128
+olcSizeLimit: 500
+olcSyncUseSubentry: FALSE
+olcMonitoring: FALSE
+olcPasswordHash: {{ ldaptoolbox_olcPasswordHash }}
+olcSortVals: {{ ldaptoolbox_openldap_olcSortVals }}
+
+dn: olcDatabase={0}config,cn=config
+objectClass: olcDatabaseConfig
+olcDatabase: {0}config
+olcAccess: {0}to *  by * none
+olcAddContentAcl: TRUE
+olcLastMod: TRUE
+olcMaxDerefDepth: 15
+olcReadOnly: FALSE
+olcRootDN: {{ ldaptoolbox_openldap_config_olcRootDN }}
+olcRootPW: {{ ldaptoolbox_openldap_config_olcRootPW_hash }}
+olcSyncUseSubentry: FALSE
+olcMonitoring: FALSE
+
+dn: olcDatabase={1}mdb,cn=config
+objectClass: olcDatabaseConfig
+objectClass: olcMdbConfig
+olcDatabase: {1}mdb
+olcDbDirectory: /usr/local/openldap/var/openldap-data
+olcSuffix: {{ ldaptoolbox_openldap_suffix }}
+olcLastMod: TRUE
+{% for limit in ldaptoolbox_openldap_database_olcLimits %}
+olcLimits: {{ limit }}
+{% endfor %}
+olcMaxDerefDepth: 15
+olcReadOnly: FALSE
+olcRootDN: {{ ldaptoolbox_openldap_database_olcRootDN }}
+olcRootPW: {{ ldaptoolbox_openldap_database_olcRootPW_hash }}
+olcSyncUseSubentry: FALSE
+olcLastBind: TRUE
+{% for syncrepl in ldaptoolbox_openldap_syncrepl %}
+olcSyncrepl: rid={{ syncrepl.rid }} provider={{ syncrepl.provider }} bindmethod=simple timeout=0 network-timeout=0 binddn="{{ syncrepl.binddn }}" credentials="{{ syncrepl.password }}" keepalive=0:0:0 starttls=no {% if syncrepl.tlscert %}tls_cert="{{ syncrepl.tlscert }}" tls_key={{ syncrepl.tlskey }}" tls_cacert="{{ syncrepl.tlscacert }}" tls_reqcert="{{ syncrepl.tlsreqcert }}"{% endif %} filter="(objectclass=*)" searchbase="{{ syncrepl.searchbase }}" scope="{{ syncrepl.scope }}" schemachecking=on type="{{ syncrepl.type }}" retry="{{ syncrepl.retry }}"
+{% endfor %}
+{% if ldaptoolbox_openldap_syncrepl|length > 0 %}
+olcMultiProvider: TRUE
+{% endif %}
+olcMonitoring: TRUE
+{% for index in ldaptoolbox_openldap_database_olcDbIndexes %}
+olcDbIndex: {{ index }}
+{% endfor %}
+olcDbMaxSize: {{ ldaptoolbox_openldap_database_olcDbMaxSize }}
+
+dn: olcOverlay={0}syncprov,olcDatabase={1}mdb,cn=config
+objectClass: olcOverlayConfig
+objectClass: olcSyncProvConfig
+olcOverlay: {0}syncprov
+olcSpCheckpoint: {{ ldaptoolbox_openldap_overlay_syncprov_olcSpCheckpoint }}
+olcSpSessionlog: {{ ldaptoolbox_openldap_overlay_syncprov_olcSpSessionlog }}
+
+dn: olcOverlay={1}ppolicy,olcDatabase={1}mdb,cn=config
+objectClass: olcOverlayConfig
+objectClass: olcPPolicyConfig
+olcOverlay: {1}ppolicy
+olcPPolicyDefault: {{ ldaptoolbox_openldap_overlay_ppolicy_olcPPolicyDefault }}
+olcPPolicyHashCleartext: {{ ldaptoolbox_openldap_overlay_ppolicy_olcPPolicyHashCleartext }}
+olcPPolicyUseLockout: {{ ldaptoolbox_openldap_overlay_ppolicy_olcPPolicyUseLockout }}
+
+dn: olcOverlay={2}refint,olcDatabase={1}mdb,cn=config
+objectClass: olcOverlayConfig
+objectClass: olcRefintConfig
+olcOverlay: {2}refint
+olcRefintAttribute: {{ ldaptoolbox_openldap_overlay_refint_olcRefintAttribute }}
+olcRefintNothing: {{ ldaptoolbox_openldap_overlay_refint_olcRefintNothing }}
+
+dn: olcOverlay={3}dynlist,olcDatabase={1}mdb,cn=config
+objectClass: olcOverlayConfig
+objectClass: olcDynamicList
+olcOverlay: {3}dynlist
+olcDlAttrSet: {{ ldaptoolbox_openldap_overlay_dynlist_olcDlAttrSet }}
+
+dn: olcDatabase={2}monitor,cn=config
+objectClass: olcDatabaseConfig
+olcDatabase: {2}monitor
+olcRootDN: {{ ldaptoolbox_openldap_monitor_olcRootDN }}
+olcRootPW: {{ ldaptoolbox_openldap_monitor_olcRootPW }}
+olcAddContentAcl: FALSE
+olcLastMod: TRUE
+olcMaxDerefDepth: 15
+olcReadOnly: FALSE
+olcSyncUseSubentry: FALSE
+olcMonitoring: FALSE
+

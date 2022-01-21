@@ -1,0 +1,57 @@
+---
+# defaults file for ansible-role-ldaptoolbox-openldap
+
+# Common configuration
+# --------------------
+
+# APT configuration
+ldaptoolbox_openldap_apt_key_url: "https://ltb-project.org/documentation/_static/RPM-GPG-KEY-LTB-project"
+ldaptoolbox_openldap_apt_key_id: "3FC3FD92ABA3975D2BEB95A70AC51F926D45BFC5"
+ldaptoolbox_openldap_apt_repo_filename: "ltb-project-openldap"
+ldaptoolbox_openldap_apt_keyrings_path: /usr/share/keyrings
+ldaptoolbox_openldap_apt_repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/ltb-project-openldap.gpg] http://ltb-project.org/debian/openldap25/bullseye bullseye main"
+ldaptoolbox_openldap_apt_validate_certs: "true"
+
+# Packages
+ldaptoolbox_openldap_packages_base: openldap-ltb, openldap-ltb-contrib-overlays, openldap-ltb-mdb-utils
+ldaptoolbox_openldap_packages_dependencies: libcrack2, curl
+ldaptoolbox_openldap_packages_state: present
+
+# Configuration
+ldaptoolbox_openldap_configuration_backup_dir: /var/backups/openldap
+ldaptoolbox_openldap_configuration_timestamp_cmd: 'date +%Y%m%d%H%M%S'
+ldaptoolbox_openldap_configuration_timestamp: '00000000000000'
+ldaptoolbox_openldap_configuration_prefix: "config"
+ldaptoolbox_openldap_configuration_owner: ldap
+ldaptoolbox_openldap_configuration_group: ldap
+ldaptoolbox_openldap_configuration_mode: 0600
+ldaptoolbox_openldap_sslgroup: ssl-cert
+
+ldaptoolbox_openldap_slapd_cli_cmd: /usr/local/openldap/sbin/slapd-cli
+
+ldaptoolbox_openldap_module_list:
+  - argon2.la
+  - pw-pbkdf2.la
+  - back_mdb.la
+  - dynlist.la
+  - ppolicy.la
+  - syncprov.la
+  - unique.la
+  - refint.la
+
+ldaptoolbox_openldap_custom_schema_srcdir: ""
+ldaptoolbox_openldap_custom_schema_list: []
+ldaptoolbox_openldap_schema_dir: /usr/local/openldap/etc/openldap/schema
+
+ldaptoolbox_openldap_manager: ""
+ldaptoolbox_openldap_suffix: ""
+
+ldaptoolbox_openldap_syncrepl:
+- rid: 001
+  provider: "ldap://localhost:389/"
+  binddn: "{{ ldaptoolbox_openldap_"
+  password: "{{ ldaptoolbox_openldap_syncrepl_password }}"
+  searchbase: ""
+
+ldaptoolbox_olcPasswordHash: "{ARGON2}"
+
