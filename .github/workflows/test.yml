@@ -8,12 +8,13 @@ jobs:
     name: test ansible-role-ldaptoolbox-openldap syntax
     steps:
       - uses: actions/checkout@v2
-      - name: test ansible check
-      - run: |
+      - name: get repository
+        run: |
           git fetch --unshallow
           git pull origin
           git config user.email "automatic@github.com"
           git config user.name "GitHub Actions"
+      - name: test ansible syntax
         run: |
           sudo apt-get install -y python3-pip
           sudo pip install ansible
