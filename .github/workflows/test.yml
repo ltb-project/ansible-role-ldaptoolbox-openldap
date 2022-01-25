@@ -17,7 +17,7 @@ jobs:
       - name: test ansible syntax
         run: |
           sudo apt-get install -y python3-pip
-          sudo pip install ansible
+          sudo pip3 install ansible
           ansible --version
           printf '[defaults]\nroles_path=../' >ansible.cfg
           ansible-playbook tests/test.yml -i tests/inventory --syntax-check
