@@ -15,7 +15,7 @@ jobs:
           git config user.name "GitHub Actions"
       - name: test ansible
         run: |
-          sudo apt-get install -y python-pip
+          sudo apt-get install -y python3-pip
           sudo pip install ansible
           ansible --version
           printf '[defaults]\nroles_path=../' >ansible.cfg
