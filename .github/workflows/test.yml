@@ -1,19 +1,20 @@
-name: Test ansible deployment
+name: Test ansible-role-ldaptoolbox-openldap
 
 on: push
 
 jobs:
   test-deployment:
     runs-on: ubuntu-latest
-    name: Test ansible deployment
+    name: test ansible-role-ldaptoolbox-openldap syntax
     steps:
       - uses: actions/checkout@v2
+      - name: get repository
       - run: |
           git fetch --unshallow
           git pull origin
           git config user.email "automatic@github.com"
           git config user.name "GitHub Actions"
-      - name: test ansible
+      - name: test ansible check
         run: |
           sudo apt-get install -y python3-pip
           sudo pip install ansible
