@@ -20,4 +20,4 @@ jobs:
           sudo pip3 install ansible
           ansible --version
           printf '[defaults]\nroles_path=../' >ansible.cfg
-          ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+          ansible-playbook tests/test.yml -i tests/inventory --syntax-check --vault-password-file .vault_pass
