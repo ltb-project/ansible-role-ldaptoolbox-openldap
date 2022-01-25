@@ -43,15 +43,7 @@ ldaptoolbox_openldap_custom_schema_srcdir: ""
 ldaptoolbox_openldap_custom_schema_list: []
 ldaptoolbox_openldap_schema_dir: /usr/local/openldap/etc/openldap/schema
 
-ldaptoolbox_openldap_manager: ""
-ldaptoolbox_openldap_suffix: ""
-
-ldaptoolbox_openldap_syncrepl:
-- rid: 001
-  provider: "ldap://localhost:389/"
-  binddn: "{{ ldaptoolbox_openldap_"
-  password: "{{ ldaptoolbox_openldap_syncrepl_password }}"
-  searchbase: ""
+ldaptoolbox_openldap_suffix: "dc=my-domain,dc=com"
 
 ldaptoolbox_olcPasswordHash: "{ARGON2}"
 

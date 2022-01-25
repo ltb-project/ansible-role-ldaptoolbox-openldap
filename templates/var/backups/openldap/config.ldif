@@ -154,7 +154,7 @@ dn: olcDatabase={2}monitor,cn=config
 objectClass: olcDatabaseConfig
 olcDatabase: {2}monitor
 olcRootDN: {{ ldaptoolbox_openldap_monitor_olcRootDN }}
-olcRootPW: {{ ldaptoolbox_openldap_monitor_olcRootPW }}
+olcRootPW: {{ ldaptoolbox_openldap_monitor_olcRootPW_hash }}
 olcAddContentAcl: FALSE
 olcLastMod: TRUE
 olcMaxDerefDepth: 15

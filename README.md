@@ -1,12 +1,13 @@
 OpenLDAP
 ========
 
-Ansible role which installs and configures [LTP-Projects](https://ltb-project.org/)'s OpenLDAP.
+Ansible role which installs and configures [LTB-Project](https://ltb-project.org/)'s OpenLDAP.
 
 Requirements
 ------------
 
-n/a
+- ansible
+- HTTP connection to the LTB-project's repository
 
 Role Variables
 --------------
@@ -24,11 +25,13 @@ Dependencies
 Example Playbook
 ----------------
 
-Install and configure OpenLDAP on your servers:
+See `tests/test.yml`
 
-    - hosts: openldap_servers
-      roles:
-         - ldaptoolbox.openldap
+Run playbook with:
+
+```
+ansible-playbook tests/test.yml -i tests/inventory --ask-vault-pass
+```
 
 License
 -------
