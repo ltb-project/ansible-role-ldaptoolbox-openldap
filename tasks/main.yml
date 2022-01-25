@@ -1,0 +1,53 @@
+---
+# tasks file for ansible-role-ldaptoolbox-openldap
+
+# Installation
+# ------------
+
+- name: install package dependencies
+  package:
+    name: "{{ ldaptoolbox_openldap_packages_dependencies }}"
+    state: "{{ ldaptoolbox_openldap_packages_state }}"
+
+- name: install ldaptoolbox repository
+  include_tasks: ldaptoolbox-repository.yml
+
+- name: install openldap packages
+  package:
+    name: "{{ ldaptoolbox_openldap_packages_base }}"
+    state: "{{ ldaptoolbox_openldap_packages_state }}"
+
+- name: allow ldap to read TLS certificates
+  ansible.builtin.user:
+    name: "{{ ldaptoolbox_openldap_configuration_owner }}"
+    groups: "{{ ldaptoolbox_openldap_sslgroup }}"
+    state: present
+  when: ldaptoolbox_openldap_olcTLSCertificateFile is defined
+
+# Configuration
+# -------------
+
+- name: deploy config file
+  ansible.builtin.template:
+    src: ".{{ ldaptoolbox_openldap_configuration_backup_dir }}/{{ ldaptoolbox_openldap_configuration_prefix }}.ldif"
+    dest: "{{ ldaptoolbox_openldap_configuration_backup_dir }}/{{ ldaptoolbox_openldap_configuration_prefix }}-{{ ldaptoolbox_openldap_configuration_timestamp }}.ldif"
+    owner: "{{ ldaptoolbox_openldap_configuration_owner }}"
+    group: "{{ ldaptoolbox_openldap_configuration_group }}"
+    mode: "{{ ldaptoolbox_openldap_configuration_mode }}"
+
+- name: deploy custom schema
+  ansible.builtin.template:
+    src: "{{ ldaptoolbox_openldap_custom_schema_srcdir }}/{{ item }}"
+    dest: "{{ ldaptoolbox_openldap_schema_dir }}/{{ item }}"
+    owner: "{{ ldaptoolbox_openldap_configuration_owner }}"
+    group: "{{ ldaptoolbox_openldap_configuration_group }}"
+  loop: "{{ ldaptoolbox_openldap_custom_schema_list }}"
+
+- name: load config from file
+  ansible.builtin.shell: "{{ ldaptoolbox_openldap_slapd_cli_cmd }} restoreconfig"
+
+# Import Data
+# -----------
+
+#TODO
+

@@ -1,0 +1,23 @@
+name: Test ansible-role-ldaptoolbox-openldap
+
+on: push
+
+jobs:
+  test-deployment:
+    runs-on: ubuntu-latest
+    name: test ansible-role-ldaptoolbox-openldap syntax
+    steps:
+      - uses: actions/checkout@v2
+      - name: get repository
+        run: |
+          git fetch --unshallow
+          git pull origin
+          git config user.email "automatic@github.com"
+          git config user.name "GitHub Actions"
+      - name: test ansible syntax
+        run: |
+          sudo apt-get install -y python3-pip
+          sudo pip3 install ansible
+          ansible --version
+          printf '[defaults]\nroles_path=../' >ansible.cfg
+          ansible-playbook tests/test.yml -i tests/inventory --syntax-check
