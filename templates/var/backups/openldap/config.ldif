@@ -22,7 +22,7 @@ olcPidFile: /usr/local/openldap/var/run/slapd.pid
 olcReadOnly: FALSE
 olcSaslHost: {{ ldaptoolbox_openldap_olcSaslHost }}
 olcSaslSecProps: none
-olcServerID: 1
+olcServerID: {{ ldaptoolbox_openldap_olcServerID }}
 olcSockbufMaxIncoming: 262143
 olcSockbufMaxIncomingAuth: 16777215
 olcThreads: 16

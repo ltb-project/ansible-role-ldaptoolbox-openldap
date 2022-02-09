@@ -1,10 +1,10 @@
 ---
-# defaults file for ansible-role-ldaptoolbox-openldap
+################################################################################
+# Defaults variables for OpenLDAP role
+################################################################################
 
-# Common configuration
-# --------------------
 
-# APT configuration
+# apt package repository
 ldaptoolbox_openldap_apt_key_url: "https://ltb-project.org/documentation/_static/RPM-GPG-KEY-LTB-project"
 ldaptoolbox_openldap_apt_key_id: "3FC3FD92ABA3975D2BEB95A70AC51F926D45BFC5"
 ldaptoolbox_openldap_apt_repo_filename: "ltb-project-openldap"
@@ -17,7 +17,7 @@ ldaptoolbox_openldap_packages_base: openldap-ltb, openldap-ltb-contrib-overlays,
 ldaptoolbox_openldap_packages_dependencies: libcrack2, curl
 ldaptoolbox_openldap_packages_state: present
 
-# Configuration
+# Filesystem
 ldaptoolbox_openldap_configuration_backup_dir: /var/backups/openldap
 ldaptoolbox_openldap_configuration_timestamp_cmd: 'date +%Y%m%d%H%M%S'
 ldaptoolbox_openldap_configuration_timestamp: '00000000000000'
@@ -27,8 +27,32 @@ ldaptoolbox_openldap_configuration_group: ldap
 ldaptoolbox_openldap_configuration_mode: 0600
 ldaptoolbox_openldap_sslgroup: ssl-cert
 
+# OpenLDAP LTB CLI command path
 ldaptoolbox_openldap_slapd_cli_cmd: /usr/local/openldap/sbin/slapd-cli
 
+
+
+# OpenLDAP configuration
+################################################################################
+
+# Suffix
+ldaptoolbox_openldap_suffix: "{{ ldaptoolbox_openldap_suffix }}"
+
+# Custom schemas
+ldaptoolbox_openldap_custom_schema_srcdir: ""
+ldaptoolbox_openldap_custom_schema_list: []
+ldaptoolbox_openldap_schema_dir: /usr/local/openldap/etc/openldap/schema
+
+# Certificates
+ldaptoolbox_openldap_olcTLSCACertificateFile: /etc/ssl/certs/ca-certificates.crt
+ldaptoolbox_openldap_olcTLSCertificateFile: /etc/ssl/certs/ssl-cert-snakeoil.pem
+ldaptoolbox_openldap_olcTLSCertificateKeyFile: /etc/ssl/private/ssl-cert-snakeoil.key
+ldaptoolbox_openldap_olcTLSProtocolMin: 3.3
+
+# Log level
+ldaptoolbox_openldap_olcLogLevel: stats
+
+# Enabled modules
 ldaptoolbox_openldap_module_list:
   - argon2.la
   - pw-pbkdf2.la
@@ -39,11 +63,100 @@ ldaptoolbox_openldap_module_list:
   - unique.la
   - refint.la
 
-ldaptoolbox_openldap_custom_schema_srcdir: ""
-ldaptoolbox_openldap_custom_schema_list: []
-ldaptoolbox_openldap_schema_dir: /usr/local/openldap/etc/openldap/schema
 
-ldaptoolbox_openldap_suffix: "dc=my-domain,dc=com"
+##################
+# Database options
+##################
 
+# config database
+ldaptoolbox_openldap_config_olcRootDN: cn=admin,cn=config
+ldaptoolbox_openldap_config_olcRootPW_hash: "{{ ldaptoolbox_openldap_config_olcRootPW_hash_vault }}"
+
+# main database
+ldaptoolbox_openldap_database_olcRootDN: "cn=admin,{{ ldaptoolbox_openldap_suffix }}"
+ldaptoolbox_openldap_database_olcRootPW_hash: "{{ ldaptoolbox_openldap_database_olcRootPW_hash_vault }}"
+ldaptoolbox_openldap_database_olcDbMaxSize: "4294967296"
+
+# monitor database
+ldaptoolbox_openldap_monitor_olcRootDN: "cn=monitor"
+ldaptoolbox_openldap_monitor_olcRootPW_hash: "{{ ldaptoolbox_openldap_monitor_olcRootPW_hash_vault }}"
+
+
+
+##########################
+# General OpenLDAP options
+##########################
+
+ldaptoolbox_openldap_olcSaslHost: 127.0.0.1
+ldaptoolbox_openldap_olcSortVals: member
 ldaptoolbox_olcPasswordHash: "{ARGON2}"
+
+# Access rights
+ldaptoolbox_openldap_access_list:
+  - to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break
+  - to dn.base="" by * read
+  - to dn.base="cn=Subschema" by * read
+  - to * by self write  by users read  by anonymous auth
+
+# Limits
+ldaptoolbox_openldap_database_olcLimits:
+  - dn.base="uid=syncrepl,ou=accounts,ou=infrastructure,{{ ldaptoolbox_openldap_suffix }}" size=unlimited  time=unlimited
+
+# Indexes definition
+ldaptoolbox_openldap_database_olcDbIndexes:
+  - "objectClass eq"
+  - "entryUUID eq"
+  - "entryCSN eq"
+  - "cn pres,eq,sub"
+  - "uid pres,eq,sub"
+
+########################
+# Replication directives
+########################
+
+ldaptoolbox_openldap_olcServerID: 1
+ldaptoolbox_openldap_syncrepl:
+- rid: "001"
+  provider: "ldap://localhost:389/"
+  tlscert: "{{ ldaptoolbox_openldap_olcTLSCertificateFile }}"
+  tlskey: "{{ ldaptoolbox_openldap_olcTLSCertificateKeyFile }}"
+  tlscacert: "{{ ldaptoolbox_openldap_olcTLSCACertificateFile }}"
+  tlsreqcert: "demand"
+  binddn: "uid=syncrepl,ou=accounts,ou=infrastructure,{{ ldaptoolbox_openldap_suffix }}"
+  password: "{{ ldaptoolbox_openldap_syncrepl_password_vault }}"
+  searchbase: "{{ ldaptoolbox_openldap_suffix }}"
+  scope: "sub"
+  type: "refreshAndPersist"
+  retry: "5 5 300 +"
+- rid: "002"
+  provider: "ldap://localhost:389/"
+  tlscert: "{{ ldaptoolbox_openldap_olcTLSCertificateFile }}"
+  tlskey: "{{ ldaptoolbox_openldap_olcTLSCertificateKeyFile }}"
+  tlscacert: "{{ ldaptoolbox_openldap_olcTLSCACertificateFile }}"
+  tlsreqcert: "demand"
+  binddn: "uid=syncrepl,ou=accounts,ou=infrastructure,{{ ldaptoolbox_openldap_suffix }}"
+  password: "{{ ldaptoolbox_openldap_syncrepl_password_vault }}"
+  searchbase: "{{ ldaptoolbox_openldap_suffix }}"
+  scope: "sub"
+  type: "refreshAndPersist"
+  retry: "5 5 300 +"
+ldaptoolbox_openldap_overlay_syncprov_olcSpCheckpoint: "100 10"
+ldaptoolbox_openldap_overlay_syncprov_olcSpSessionlog: "100"
+
+########################
+# Overlays configuration
+########################
+
+# Password policy
+ldaptoolbox_openldap_overlay_ppolicy_olcPPolicyDefault: "cn=default,ou=ppolicies,{{ ldaptoolbox_openldap_suffix }}"
+ldaptoolbox_openldap_overlay_ppolicy_olcPPolicyHashCleartext: "TRUE"
+ldaptoolbox_openldap_overlay_ppolicy_olcPPolicyUseLockout: "TRUE"
+
+# Referential integrity
+ldaptoolbox_openldap_overlay_refint_olcRefintAttribute: "member"
+ldaptoolbox_openldap_overlay_refint_olcRefintNothing: "cn=nothing,{{ ldaptoolbox_openldap_suffix }}"
+
+# Dynamic groups (dynlist)
+ldaptoolbox_openldap_overlay_dynlist_olcDlAttrSet: "groupOfURLs memberURL member+memberOf@groupOfNames*"
+
 

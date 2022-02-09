@@ -12,26 +12,44 @@ Requirements
 Role Variables
 --------------
 
-You'll need to store the hash value for you admin password. You'll get it like this:
+You'll need to store the hash value for you admin passwords. You'll get it like this:
 
 ```
 /usr/local/openldap/sbin/slappasswd -o module-path="/usr/local/openldap/libexec/openldap" -o module-load="argon2" -h "{ARGON2}" -s "password"
 ```
 
-Dependencies
-------------
+Store the passwords in the vault file in: `tests/credentials-vault.yml`
 
 
-Example Playbook
-----------------
+Playbook examples
+-----------------
 
-See `tests/test.yml`
+You should:
+ * either deploy your role
+ * or use a configuration file for setting the role path, for example:
+
+ansible.cfg
+```
+[defaults]
+roles_path=../
+```
+
+See `tests/standalone.yml`
 
 Run playbook with:
 
 ```
-ansible-playbook tests/test.yml -i tests/inventory --ask-vault-pass
+ansible-playbook tests/standalone.yml -i tests/inventory --ask-vault-pass
 ```
+
+or:
+
+```
+ansible-playbook tests/standalone.yml -i tests/inventory --vault-password-file .vault_pass
+```
+
+If you need a two-nodes multimaster example, give a look at `tests/multimaster1.yml` and `tests/multimaster2.yml`
+
 
 License
 -------
