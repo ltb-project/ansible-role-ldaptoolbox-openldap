@@ -1,0 +1,24 @@
+---
+# tasks file for deploying monitoring tools
+
+- name: Download Nagios plugins
+  get_url:
+    url: "{{ ltb_base_url }}{{ ltb_nagios_archive_name }}"
+    dest: "{{ ltb_dest_path }}"
+    mode: '0644'
+
+- name: Download Cacti plugins
+  get_url:
+    url: "{{ ltb_base_url }}{{ ltb_cacti_archive_name }}"
+    dest: "{{ ltb_dest_path }}"
+    mode: '0644'
+
+- name: extract Nagios archive
+  ansible.builtin.unarchive:
+    src: "{{ ltb_dest_path }}/{{ ltb_nagios_archive_name }}"
+    dest: "{{ ltb_dest_path }}"
+
+- name: extract Cacti archive
+  ansible.builtin.unarchive:
+    src: "{{ ltb_dest_path }}/{{ ltb_cacti_archive_name }}"
+    dest: "{{ ltb_dest_path }}"

@@ -51,6 +51,15 @@ ansible-playbook tests/standalone.yml -i tests/inventory --vault-password-file .
 If you need a two-nodes multimaster example, give a look at `tests/multimaster1.yml` and `tests/multimaster2.yml`
 
 
+Give a look to `tests/monitoring.yml` for an example of playbook that deploys LTB monitoring and statistics tools
+
+Run the corresponding task with: 
+
+```
+ansible-playbook tests/monitoring.yml -i tests/inventory
+```
+
+
 License
 -------
 
