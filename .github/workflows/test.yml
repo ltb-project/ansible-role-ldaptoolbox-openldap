@@ -11,7 +11,7 @@ jobs:
       - name: get repository
         run: |
           git fetch --unshallow
-          git pull origin
+          git pull origin main
           git config user.email "automatic@github.com"
           git config user.name "GitHub Actions"
       - name: test ansible syntax
