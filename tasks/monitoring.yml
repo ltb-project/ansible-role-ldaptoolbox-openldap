@@ -1,6 +1,13 @@
 ---
 # tasks file for deploying monitoring tools
 
+- name: Install monitoring dependencies
+  apt:
+    pkg:
+      - perl
+      - libnet-ldap-perl
+      - monitoring-plugins-contrib
+
 - name: Download Nagios plugins
   get_url:
     url: "{{ ltb_base_url }}{{ ltb_nagios_archive_name }}"
