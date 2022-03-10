@@ -24,8 +24,10 @@
   ansible.builtin.unarchive:
     src: "{{ ltb_dest_path }}/{{ ltb_nagios_archive_name }}"
     dest: "{{ ltb_dest_path }}"
+    remote_src: yes
 
 - name: extract Cacti archive
   ansible.builtin.unarchive:
     src: "{{ ltb_dest_path }}/{{ ltb_cacti_archive_name }}"
     dest: "{{ ltb_dest_path }}"
+    remote_src: yes
