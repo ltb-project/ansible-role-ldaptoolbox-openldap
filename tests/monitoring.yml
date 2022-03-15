@@ -6,10 +6,13 @@
   remote_user: root
   vars:
     # destination path where to put monitoring and statistics tools
-    ltb_dest_path: "/usr/local/openldap/etc/openldap/"
-    ltb_base_url: "https://ltb-project.org/archives/"
+    ltb_base_url: "https://ltb-project.org/archives"
     ltb_nagios_archive_name: "ltb-project-nagios-plugins-0.8.tar.gz"
+    ltb_nagios_dest_path: "/usr/local/openldap/etc/openldap/"
+    ltb_nagios_unarchive_opts: ""
     ltb_cacti_archive_name: "ltb-project-cacti-plugins-0.3.tar.gz"
+    ltb_cacti_dest_path: "/usr/local/openldap/etc/openldap/"
+    ltb_cacti_unarchive_opts: ""
   tasks:
     - name: deploying monitoring and statistics tools from LTB (load tasks/monitoring.yml)
       include_role:
