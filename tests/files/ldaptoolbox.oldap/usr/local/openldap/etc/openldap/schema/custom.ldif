@@ -1,1 +1,4 @@
 # Custom ldif schema
+dn: cn=custom,cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: custom
