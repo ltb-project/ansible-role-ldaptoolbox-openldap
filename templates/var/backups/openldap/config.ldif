@@ -17,7 +17,8 @@ olcIndexSubstrAnyLen: 4
 olcIndexSubstrAnyStep: 2
 olcIndexIntLen: 4
 olcListenerThreads: 1
-olcLocalSSF: 71
+# olcLocalSSF: 71 , allow ldapi access, make it >= olcSecurity ssf
+olcLocalSSF: 128
 olcPidFile: /usr/local/openldap/var/run/slapd.pid
 olcReadOnly: FALSE
 olcSaslHost: {{ ldaptoolbox_openldap_olcSaslHost }}
@@ -26,12 +27,16 @@ olcServerID: {{ ldaptoolbox_openldap_olcServerID }}
 olcSockbufMaxIncoming: 262143
 olcSockbufMaxIncomingAuth: 16777215
 olcThreads: 16
+{% if ldaptoolbox_openldap_olcTLSCACertificateFile %}
 olcTLSCACertificateFile: {{ ldaptoolbox_openldap_olcTLSCACertificateFile }}
-olcTLSCertificateFile:  {{ ldaptoolbox_openldap_olcTLSCertificateFile }}
-olcTLSCertificateKeyFile: {{ ldaptoolbox_openldap_olcTLSCertificateKeyFile }}
 olcTLSCRLCheck: none
 olcTLSVerifyClient: allow
 olcTLSProtocolMin: {{ ldaptoolbox_openldap_olcTLSProtocolMin }}
+{% endif %}
+{% if ldaptoolbox_openldap_olcTLSCertificateFile %}
+olcTLSCertificateFile:  {{ ldaptoolbox_openldap_olcTLSCertificateFile }}
+olcTLSCertificateKeyFile: {{ ldaptoolbox_openldap_olcTLSCertificateKeyFile }}
+{% endif %}
 olcToolThreads: 1
 olcWriteTimeout: 0
 olcLogLevel: {{ ldaptoolbox_openldap_olcLogLevel }}
@@ -84,7 +89,7 @@ olcSortVals: {{ ldaptoolbox_openldap_olcSortVals }}
 dn: olcDatabase={0}config,cn=config
 objectClass: olcDatabaseConfig
 olcDatabase: {0}config
-olcAccess: {0}to *  by * none
+olcAccess: {0} to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * none
 olcAddContentAcl: TRUE
 olcLastMod: TRUE
 olcMaxDerefDepth: 15
@@ -111,7 +116,7 @@ olcRootPW: {{ ldaptoolbox_openldap_database_olcRootPW_hash }}
 olcSyncUseSubentry: FALSE
 olcLastBind: TRUE
 {% for syncrepl in ldaptoolbox_openldap_syncrepl %}
-olcSyncrepl: rid={{ syncrepl.rid }} provider={{ syncrepl.provider }} bindmethod=simple timeout=0 network-timeout=0 binddn="{{ syncrepl.binddn }}" credentials="{{ syncrepl.password }}" keepalive=0:0:0 starttls=no {% if syncrepl.tlscert %}tls_cert="{{ syncrepl.tlscert }}" tls_key={{ syncrepl.tlskey }}" tls_cacert="{{ syncrepl.tlscacert }}" tls_reqcert="{{ syncrepl.tlsreqcert }}"{% endif %} filter="(objectclass=*)" searchbase="{{ syncrepl.searchbase }}" scope="{{ syncrepl.scope }}" schemachecking=on type="{{ syncrepl.type }}" retry="{{ syncrepl.retry }}"
+olcSyncrepl: rid={{ syncrepl.rid }} provider={{ syncrepl.provider }} bindmethod=simple timeout=0 network-timeout=0 binddn="{{ syncrepl.binddn }}" credentials="{{ syncrepl.password }}" keepalive=0:0:0 starttls=no {% if syncrepl.tlscert %}tls_cert="{{ syncrepl.tlscert }}" tls_key="{{ syncrepl.tlskey }}" tls_cacert="{{ syncrepl.tlscacert }}" tls_reqcert="{{ syncrepl.tlsreqcert }}"{% endif %} filter="(objectclass=*)" searchbase="{{ syncrepl.searchbase }}" scope="{{ syncrepl.scope }}" schemachecking=on type="{{ syncrepl.type }}" retry="{{ syncrepl.retry }}"
 {% endfor %}
 {% if ldaptoolbox_openldap_syncrepl|length > 0 %}
 olcMultiProvider: TRUE

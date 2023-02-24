@@ -22,8 +22,6 @@
 
 - name: setup certificates
   include_tasks: ldaptoolbox-certificates.yml
-  when: ( ansible_os_family == "Debian")
-
 
 # Configuration
 # -------------
@@ -36,6 +34,14 @@
     group: "{{ ldaptoolbox_openldap_configuration_group }}"
     mode: "{{ ldaptoolbox_openldap_configuration_mode }}"
 
+- name: deploy sladp-cli file
+  ansible.builtin.template:
+    src: "./usr/local/openldap/etc/openldap/slapd-cli.conf"
+    dest: "/usr/local/openldap/etc/openldap/slapd-cli.conf"
+    owner: "root"
+    group: "root"
+    mode: "644"
+
 - name: deploy custom schema
   ansible.builtin.template:
     src: "{{ ldaptoolbox_openldap_custom_schema_srcdir }}/{{ item }}"
@@ -46,6 +52,9 @@
 
 - name: load config from file
   ansible.builtin.shell: "{{ ldaptoolbox_openldap_slapd_cli_cmd }} restoreconfig"
+
+- name: build generated data from template
+  ansible.builtin.shell: "{{ ldaptoolbox_openldap_slapd_cli_cmd }} importdatatemplate"
 
 # Import Data
 # -----------
