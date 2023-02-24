@@ -3,7 +3,7 @@
     name: "{{ ldaptoolbox_openldap_configuration_owner }}"
     groups: "{{ ldaptoolbox_openldap_sslgroup }}"
     state: present
-  when: ( ldaptoolbox_openldap_olcTLSCertificateFile is defined )
+  when: ( ldaptoolbox_openldap_olcTLSCertificateFile )
 
 - name: Ensure correct file ownership, group and permissions for CA
   ansible.builtin.file:
@@ -11,6 +11,7 @@
     owner: "root"
     group: "root"
     mode: "644"
+  when: ( ldaptoolbox_openldap_olcTLSCACertificateFile )
 
 - name: Ensure correct file ownership, group and permissions for certificate
   ansible.builtin.file:
@@ -18,6 +19,7 @@
     owner: "root"
     group: "root"
     mode: "644"
+  when: ( ldaptoolbox_openldap_olcTLSCertificateFile )
 
 - name: Ensure correct file ownership, group and permissions for key
   ansible.builtin.file:
@@ -25,3 +27,4 @@
     owner: "root"
     group: "{{ ldaptoolbox_openldap_sslgroup }}"
     mode: "640"
+  when: ( ldaptoolbox_openldap_olcTLSCertificateKeyFile )

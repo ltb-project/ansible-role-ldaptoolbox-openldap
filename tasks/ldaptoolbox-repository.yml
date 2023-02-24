@@ -7,13 +7,12 @@
   - name: fetch repository key
     ansible.builtin.shell: "curl {{ ldaptoolbox_openldap_apt_key_url }} | gpg --dearmor > {{ ldaptoolbox_openldap_apt_keyrings_path }}/{{ ldaptoolbox_openldap_apt_repo_filename }}.gpg"
 
-  - name: add repository
+  - name: add debian repository
     ansible.builtin.apt_repository:
       repo: "{{ ldaptoolbox_openldap_apt_repo }}"
       filename: "{{ ldaptoolbox_openldap_apt_repo_filename }}"
       update_cache: yes
       state: present
-
   when:
   - ansible_os_family == "Debian"
 
@@ -29,7 +28,7 @@
       dnf config-manager --set-enabled powertools
       dnf install -y epel-release epel-next-release
 
-  - name: "setup ldaptoolbox repository on centos"
+  - name: "setup ldaptoolbox repository on redhat / centos / rocky "
     copy:
       content: |
         [ltb-project]
@@ -39,8 +38,7 @@
         gpgcheck=1
         gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-LTB-project
       dest: /etc/yum.repos.d/ltb-project.repo
-  when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "8")
-
+  when: ( ((ansible_distribution == "CentOS")  or (ansible_distribution == "Rocky") or (ansible_distribution == 'Red Hat Enterprise Linux' )) and ( ( ansible_distribution_major_version == "8" ) or ( ansible_distribution_major_version == "9" ) ) )
 
 - name: "unsupported distribution check"
   ansible.builtin.shell: "echo '{{ ansible_distribution }} {{ ansible_distribution_major_version }} ' > /root/ansible_vars"
