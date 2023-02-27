@@ -161,4 +161,11 @@ ldaptoolbox_openldap_overlay_refint_olcRefintNothing: "cn=nothing,{{ ldaptoolbox
 # Dynamic groups (dynlist)
 ldaptoolbox_openldap_overlay_dynlist_olcDlAttrSet: "groupOfURLs memberURL member+memberOf@groupOfNames*"
 
+#############
+# Data import
+#############
 
+ldaptoolbox_openldap_data_prefix: 'openldap-data'
+# if not defined the default population template will be used which is fine for test purposes
+# here a sample using current ansible host as source. ( might not work due to rights ).
+# ldaptoolbox_openldap_import_data_ldif:  '/var/backups/openldap/openldap-data-20230227112107.ldif'
