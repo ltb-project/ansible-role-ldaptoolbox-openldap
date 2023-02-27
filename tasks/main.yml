@@ -55,9 +55,20 @@
 
 - name: build generated data from template
   ansible.builtin.shell: "{{ ldaptoolbox_openldap_slapd_cli_cmd }} importdatatemplate"
+  when: not ldaptoolbox_openldap_import_data_ldif is defined
 
 # Import Data
 # -----------
 
-#TODO
+- name: import data ldif provided
+  copy:
+    src: "{{ ldaptoolbox_openldap_import_data_ldif }}"
+    dest: "{{ ldaptoolbox_openldap_configuration_backup_dir }}/{{ ldaptoolbox_openldap_data_prefix }}-{{ ldaptoolbox_openldap_configuration_timestamp }}.ldif"
+    owner: "{{ ldaptoolbox_openldap_configuration_owner }}"
+    group: "{{ ldaptoolbox_openldap_configuration_group }}"
+    mode: "{{ ldaptoolbox_openldap_configuration_mode }}"
+  when: ldaptoolbox_openldap_import_data_ldif is defined
+
+- name: restore data
+  ansible.builtin.shell: "{{ ldaptoolbox_openldap_slapd_cli_cmd }} restore"
 

@@ -1,5 +1,0 @@
----
-# vars file for ansible-role-ldaptoolbox-openldap
-
-# for centos
-# ldaptoolbox_openldap_olcTLSCACertificateFile: /etc/ssl/certs/ca-bundle.crt
