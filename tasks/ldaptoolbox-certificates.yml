@@ -1,3 +1,29 @@
+- name: import TLS CA CertificateFile
+  copy:
+    src: "{{ ldaptoolbox_openldap_import_olcTLSCACertificateFile }}"
+    dest: "{{ ldaptoolbox_openldap_olcTLSCACertificateFile}}"
+    owner: "root"
+    group: "{{ ldaptoolbox_openldap_sslgroup }}"
+    mode: "644"
+  when: ldaptoolbox_openldap_import_olcTLSCACertificateFile is defined
+
+- name: import TLS CertificateFile
+  copy:
+    src: "{{ ldaptoolbox_openldap_import_olcTLSCertificateFile }}"
+    dest: "{{ ldaptoolbox_openldap_olcTLSCertificateFile}}"
+    group: "{{ ldaptoolbox_openldap_sslgroup }}"
+    mode: "644"
+  when: ldaptoolbox_openldap_import_olcTLSCertificateFile is defined
+
+- name: import TLS CertificateKeyFile
+  copy:
+    src: "{{ ldaptoolbox_openldap_import_olcTLSCertificateKeyFile }}"
+    dest: "{{ ldaptoolbox_openldap_olcTLSCertificateKeyFile}}"
+    owner: "root"
+    group: "{{ ldaptoolbox_openldap_sslgroup }}"
+    mode: "640"
+  when: ldaptoolbox_openldap_import_olcTLSCertificateKeyFile is defined
+
 - name: allow ldap to read TLS certificates
   ansible.builtin.user:
     name: "{{ ldaptoolbox_openldap_configuration_owner }}"

@@ -169,3 +169,8 @@ ldaptoolbox_openldap_data_prefix: 'openldap-data'
 # if not defined the default population template will be used which is fine for test purposes
 # here a sample using current ansible host as source. ( might not work due to rights ).
 # ldaptoolbox_openldap_import_data_ldif:  '/var/backups/openldap/openldap-data-20230227112107.ldif'
+
+# import certificats if needed, don't define them at all if no import is required.
+# ldaptoolbox_openldap_import_olcTLSCACertificateFile: ca-cert.pem
+# ldaptoolbox_openldap_import_olcTLSCertificateFile: ldaps-cert.pem
+# ldaptoolbox_openldap_import_olcTLSCertificateKeyFile: nantes-ldaps.key
