@@ -19,7 +19,6 @@
     name: "{{ ldaptoolbox_openldap_packages_base }}"
     state: "{{ ldaptoolbox_openldap_packages_state }}"
 
-
 - name: setup certificates
   include_tasks: ldaptoolbox-certificates.yml
 
