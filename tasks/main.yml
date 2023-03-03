@@ -68,6 +68,10 @@
     mode: "{{ ldaptoolbox_openldap_configuration_mode }}"
   when: ldaptoolbox_openldap_import_data_ldif is defined
 
+- name: add syncrepl account
+  include_tasks: ldaptoolbox-add-syncrepl.yml
+  when: ldaptoolbox_openldap_import_data_ldif is defined
+
 - name: restore data
   ansible.builtin.shell: "{{ ldaptoolbox_openldap_slapd_cli_cmd }} restore"
 

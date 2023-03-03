@@ -1,0 +1,18 @@
+dn: ou=infrastructure,{{ ldaptoolbox_openldap_suffix }}
+ou: infrastructure
+objectClass: organizationalUnit
+
+dn: ou=accounts,ou=infrastructure,{{ ldaptoolbox_openldap_suffix }}
+ou: accounts
+objectClass: organizationalUnit
+
+dn: uid=syncrepl,ou=accounts,ou=infrastructure,{{ ldaptoolbox_openldap_suffix }}
+uid: syncrepl
+objectClass: simpleSecurityObject
+objectClass: account
+{% if  ldaptoolbox_openldap_syncrepl_password_hash %}
+userPassword: {{ ldaptoolbox_openldap_syncrepl_password_hash }}
+{% else %}
+userPassword: {{ ldaptoolbox_openldap_syncrepl_password_vault }}
+{% endif %}
+# pwdPolicySubentry: cn=dsa,ou=ppolicies,{{ ldaptoolbox_openldap_suffix }}
