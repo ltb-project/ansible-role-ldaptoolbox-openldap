@@ -1,7 +1,7 @@
 OpenLDAP
 ========
 
-Ansible role which installs and configures [LTB-Project](https://ltb-project.org/)'s OpenLDAP on Debian target.
+Ansible role which installs and configures [LTB-Project](https://ltb-project.org/)'s OpenLDAP on Debian, CentOS, Rocky and RHEL targets.
 
 Requirements
 ------------
