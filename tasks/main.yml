@@ -54,7 +54,7 @@
 
 - name: build generated data from template
   ansible.builtin.shell: "{{ ldaptoolbox_openldap_slapd_cli_cmd }} importdatatemplate"
-  when: not ldaptoolbox_openldap_import_data_ldif is defined
+  when: ldaptoolbox_openldap_generate_data_ldif is defined
 
 # Import Data
 # -----------
@@ -70,6 +70,10 @@
 
 - name: add syncrepl account
   include_tasks: ldaptoolbox-add-syncrepl.yml
+  when: ldaptoolbox_openldap_import_data_ldif is defined
+
+- name: add default ppolicy pwdPolicy
+  include_tasks: ldaptoolbox-add-ppolicy.yml
   when: ldaptoolbox_openldap_import_data_ldif is defined
 
 - name: restore data
