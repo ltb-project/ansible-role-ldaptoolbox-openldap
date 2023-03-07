@@ -1,7 +1,7 @@
+
 dn: ou=ppolicies,{{ ldaptoolbox_openldap_suffix }}
 ou: ppolicies
 objectClass: organizationalUnit
-
 
 dn: cn=default,ou=ppolicies,{{ ldaptoolbox_openldap_suffix }}
 objectClass: pwdPolicy

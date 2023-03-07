@@ -4,7 +4,7 @@
 - name: add generated ppolicy to data backup source
   blockinfile:
     path: "{{ ldaptoolbox_openldap_configuration_backup_dir }}/{{ ldaptoolbox_openldap_data_prefix }}-{{ ldaptoolbox_openldap_configuration_timestamp }}.ldif"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - ppolicy"
     block: "{{ lookup('ansible.builtin.template', './{{ ldaptoolbox_openldap_configuration_backup_dir }}/ppolicy.ldif') }}"
     create: yes
     state: present
-

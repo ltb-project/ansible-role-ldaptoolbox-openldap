@@ -1,3 +1,4 @@
+
 dn: ou=infrastructure,{{ ldaptoolbox_openldap_suffix }}
 ou: infrastructure
 objectClass: organizationalUnit
@@ -16,3 +17,4 @@ userPassword: {{ ldaptoolbox_openldap_syncrepl_password_hash }}
 userPassword: {{ ldaptoolbox_openldap_syncrepl_password_vault }}
 {% endif %}
 # pwdPolicySubentry: cn=dsa,ou=ppolicies,{{ ldaptoolbox_openldap_suffix }}
+
