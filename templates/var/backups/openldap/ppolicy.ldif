@@ -1,0 +1,26 @@
+dn: ou=ppolicies,{{ ldaptoolbox_openldap_suffix }}
+ou: ppolicies
+objectClass: organizationalUnit
+
+
+dn: cn=default,ou=ppolicies,{{ ldaptoolbox_openldap_suffix }}
+objectClass: pwdPolicy
+objectClass: device
+objectClass: top
+cn: default
+pwdAttribute: userPassword
+pwdMinAge: 0
+pwdMaxAge: 31536000
+pwdMinLength: 14
+pwdInHistory: 5
+pwdMaxFailure: 10
+pwdFailureCountInterval: 300
+pwdLockout: TRUE
+pwdLockoutDuration: 60
+pwdAllowUserChange: TRUE
+pwdExpireWarning: 864000
+pwdGraceAuthNLimit: 0
+pwdMustChange: TRUE
+pwdSafeModify: FALSE
+pwdCheckQuality: 1
+
