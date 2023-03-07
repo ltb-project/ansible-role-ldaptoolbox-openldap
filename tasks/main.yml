@@ -78,4 +78,4 @@
 
 - name: restore data
   ansible.builtin.shell: "{{ ldaptoolbox_openldap_slapd_cli_cmd }} restore"
-
+  when: ( ldaptoolbox_openldap_import_data_ldif is defined ) or ( ldaptoolbox_openldap_generate_data_ldif is defined )
