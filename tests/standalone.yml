@@ -24,7 +24,8 @@
     - ldaptoolbox_openldap_monitor_olcRootDN: "cn=monitor"
     - ldaptoolbox_openldap_monitor_olcRootPW_hash: "{{ ldaptoolbox_openldap_monitor_olcRootPW_hash_vault }}"
     # No unlimitation
-    - ldaptoolbox_openldap_database_olcLimits: []
+    - ldaptoolbox_openldap_database_olcLimits:
+         - "dn.base=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth size=unlimited  time=unlimited"
     # ACLs from default role variables
     # No replication
     - ldaptoolbox_openldap_syncrepl: []
