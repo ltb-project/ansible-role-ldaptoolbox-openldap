@@ -166,11 +166,16 @@ ldaptoolbox_openldap_overlay_dynlist_olcDlAttrSet: "groupOfURLs memberURL member
 #############
 
 ldaptoolbox_openldap_data_prefix: 'openldap-data'
-# if not defined the default population template will be used which is fine for test purposes
-# here a sample using current ansible host as source. ( might not work due to rights ).
+# import a custom data file:
 # ldaptoolbox_openldap_import_data_ldif:  '/var/backups/openldap/openldap-data-20230227112107.ldif'
+# import a custom syncrepl account (if ldaptoolbox_openldap_import_data_ldif defined):
+# ldaptoolbox_openldap_import_syncrepl: 'True'
+# import a custom password policy (if ldaptoolbox_openldap_import_data_ldif defined):
+# ldaptoolbox_openldap_import_ppolicy: 'True'
+# import test data:
+# ldaptoolbox_openldap_generate_data_ldif: 'True'
 
-# import certificats if needed, don't define them at all if no import is required.
+# import certificates if needed, don't define them at all if no import is required.
 # ldaptoolbox_openldap_import_olcTLSCACertificateFile: ca-cert.pem
-# ldaptoolbox_openldap_import_olcTLSCertificateFile: ldaps-cert.pem
-# ldaptoolbox_openldap_import_olcTLSCertificateKeyFile: nantes-ldaps.key
+# ldaptoolbox_openldap_import_olcTLSCertificateFile: slapd.crt
+# ldaptoolbox_openldap_import_olcTLSCertificateKeyFile: slapd.key

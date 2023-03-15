@@ -12,10 +12,14 @@
     # include extra schema
     - ldaptoolbox_openldap_custom_schema_srcdir: "{{ playbook_dir }}/files/ldaptoolbox.oldap/usr/local/openldap/etc/openldap/schema"
     - ldaptoolbox_openldap_custom_schema_list: [ custom.ldif ]
+    # Define certificate path to import
+    - ldaptoolbox_openldap_import_olcTLSCACertificateFile: "certs/ca-certificates.crt"
+    - ldaptoolbox_openldap_import_olcTLSCertificateFile: "certs/ssl-cert-snakeoil.pem"
+    - ldaptoolbox_openldap_import_olcTLSCertificateKeyFile: "certs/ssl-cert-snakeoil.key"
     # define certificates (must be deployed before)
-    - ldaptoolbox_openldap_olcTLSCACertificateFile: /etc/ssl/certs/ca-certificates.crt
-    - ldaptoolbox_openldap_olcTLSCertificateFile: /etc/ssl/certs/ssl-cert-snakeoil.pem
-    - ldaptoolbox_openldap_olcTLSCertificateKeyFile: /etc/ssl/private/ssl-cert-snakeoil.key
+    - ldaptoolbox_openldap_olcTLSCACertificateFile: "/usr/local/openldap/etc/openldap/ca-certificates.crt"
+    - ldaptoolbox_openldap_olcTLSCertificateFile: "/usr/local/openldap/etc/openldap/ssl-cert-snakeoil.pem"
+    - ldaptoolbox_openldap_olcTLSCertificateKeyFile: "/usr/local/openldap/etc/openldap/ssl-cert-snakeoil.key"
     # Accounts and passwords
     - ldaptoolbox_openldap_config_olcRootDN: cn=admin,cn=config
     - ldaptoolbox_openldap_config_olcRootPW_hash: "{{ ldaptoolbox_openldap_config_olcRootPW_hash_vault }}"
@@ -29,6 +33,12 @@
     # ACLs from default role variables
     # No replication
     - ldaptoolbox_openldap_syncrepl: []
+    # No specific per database ACL
+    - ldaptoolbox_openldap_database_olcAccess: []
+    # Data sample import
+    - ldaptoolbox_openldap_import_data_ldif: ./var/backups/openldap/openldap-data-sample.ldif
+    - ldaptoolbox_openldap_import_syncrepl: 'True'
+    - ldaptoolbox_openldap_import_ppolicy: 'True'
     # overlay configuration from default role variables
   roles:
     - ansible-role-ldaptoolbox-openldap

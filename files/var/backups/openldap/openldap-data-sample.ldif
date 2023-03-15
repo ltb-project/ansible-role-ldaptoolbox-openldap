@@ -1,0 +1,117 @@
+dn: dc=my-organization,dc=com
+o: My Organization
+dc: my-organization
+description: My Organization
+objectClass: dcObject
+objectClass: organization
+objectClass: top
+
+dn: ou=people,dc=my-organization,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: people
+
+dn: ou=groups,dc=my-organization,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: groups
+
+dn: uid=daniel.jackson,ou=people,dc=my-organization,dc=com
+memberOf: cn=admin,ou=groups,ou=SG2,dc=my-organization,dc=com
+memberOf: cn=admin,ou=groups,ou=SG1,dc=my-organization,dc=com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Daniel Jackson
+givenName: Daniel
+mail: daniel.jackson@my-example.com
+sn: Jackson
+uid: daniel.jackson
+userPassword:: e0FSR09OMn0kYXJnb24yaWQkdj0xOSRtPTY1NTM2LHQ9MixwPTEkY3BBOEE2VUNrVUZJTTF3cXRJOXlQZyR3dDlWTHBqeG5MUmxtSEIxMjhmYTJESU1tdmFRVk4zeUkzNTFTT3hBRXE4
+memberOf: cn=admin,ou=groups,dc=my-organization,dc=com
+
+dn: ou=SG1,dc=my-organization,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: SG1
+
+dn: ou=people,ou=SG1,dc=my-organization,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: people
+
+dn: ou=groups,ou=SG1,dc=my-organization,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: groups
+
+dn: cn=admin,ou=groups,ou=SG1,dc=my-organization,dc=com
+objectClass: groupOfNames
+objectClass: top
+cn: admin
+member: uid=daniel.jackson,ou=people,dc=my-organization,dc=com
+
+dn: ou=SG2,dc=my-organization,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: SG2
+
+dn: ou=people,ou=SG2,dc=my-organization,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: people
+
+dn: ou=groups,ou=SG2,dc=my-organization,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: groups
+
+dn: cn=admin,ou=groups,ou=SG2,dc=my-organization,dc=com
+objectClass: groupOfNames
+objectClass: top
+cn: admin
+member: uid=daniel.jackson,ou=people,dc=my-organization,dc=com
+
+dn: cn=admin,ou=groups,dc=my-organization,dc=com
+objectClass: groupOfNames
+objectClass: top
+cn: admin
+member: uid=daniel.jackson,ou=people,dc=my-organization,dc=com
+
+dn: uid=jack.oneill,ou=people,dc=my-organization,dc=com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Jack O Neill
+givenName: Jack
+mail: jack.oneill@my-example.com
+sn: O Neill
+uid: jack.oneill
+userPassword:: e0FSR09OMn0kYXJnb24yaWQkdj0xOSRtPTY1NTM2LHQ9MixwPTEkT3NaUDVrb0xRV1hXNkFBUU5FQkFHUSRydUZTbE15WkNTQ3krc29EZUlpWmpKeDJuZ1RJeFBHVnJrZnRCbmZ3WEJz
+
+dn: uid=samantha.carter,ou=people,dc=my-organization,dc=com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Samantha Carter
+givenName: Samantha
+mail: samantha.carter@my-example.com
+sn: Carter
+uid: samantha.carter
+userPassword:: e0FSR09OMn0kYXJnb24yaWQkdj0xOSRtPTY1NTM2LHQ9MixwPTEkU3R2V21nVDhad2FFdFdqUVFBSmtnZyRRWDdXTWRUS1BKSmdIU1VNZkk4MXBhYWZkMmVDaFFYVWZvazh2cWNTR3Jj
+
+dn: uid=tealc,ou=people,dc=my-organization,dc=com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: TealC Jaffa
+givenName: TealC
+mail: tealc@my-example.com
+sn: Jaffa
+uid: tealc
+userPassword:: e0FSR09OMn0kYXJnb24yaWQkdj0xOSRtPTY1NTM2LHQ9MixwPTEkRy82VE5UdWVDRUg5RmNZcVhmTm4zUSRJZWRrdGhSUktVd1hZanVFYzdPNmVXakR6L0k0N3UrTFhKempWbDRYYjFB
+

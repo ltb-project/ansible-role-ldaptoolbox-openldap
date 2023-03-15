@@ -41,5 +41,7 @@
   when: ( ((ansible_distribution == "CentOS")  or (ansible_distribution == "Rocky") or (ansible_distribution == 'RedHat' )) and ( ( ansible_distribution_major_version == "8" ) or ( ansible_distribution_major_version == "9" ) ) )
 
 - name: "unsupported distribution check"
-  ansible.builtin.shell: "echo '{{ ansible_distribution }} {{ ansible_distribution_major_version }} ' > /root/ansible_vars"
-  when: not ( (ansible_os_family == "Debian") or (ansible_distribution == "CentOS" and ansible_distribution_major_version == "8") )
+  ansible.builtin.debug:
+    msg: "Unsupported distribution {{ ansible_distribution }} {{ ansible_distribution_major_version }}"
+  when: not ( (ansible_os_family == "Debian") or ( ((ansible_distribution == "CentOS")  or (ansible_distribution == "Rocky") or (ansible_distribution == 'RedHat' )) and ( ( ansible_distribution_major_version == "8" ) or ( ansible_distribution_major_version == "9" ) ) ) )
+
