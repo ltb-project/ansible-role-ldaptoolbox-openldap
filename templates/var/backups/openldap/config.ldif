@@ -26,12 +26,16 @@ olcServerID: {{ ldaptoolbox_openldap_olcServerID }}
 olcSockbufMaxIncoming: 262143
 olcSockbufMaxIncomingAuth: 16777215
 olcThreads: 16
+{% if ldaptoolbox_openldap_olcTLSCACertificateFile %}
 olcTLSCACertificateFile: {{ ldaptoolbox_openldap_olcTLSCACertificateFile }}
-olcTLSCertificateFile:  {{ ldaptoolbox_openldap_olcTLSCertificateFile }}
-olcTLSCertificateKeyFile: {{ ldaptoolbox_openldap_olcTLSCertificateKeyFile }}
 olcTLSCRLCheck: none
 olcTLSVerifyClient: allow
+{% endif %}
+{% if ldaptoolbox_openldap_olcTLSCertificateFile %}
 olcTLSProtocolMin: {{ ldaptoolbox_openldap_olcTLSProtocolMin }}
+olcTLSCertificateFile:  {{ ldaptoolbox_openldap_olcTLSCertificateFile }}
+olcTLSCertificateKeyFile: {{ ldaptoolbox_openldap_olcTLSCertificateKeyFile }}
+{% endif %}
 olcToolThreads: 1
 olcWriteTimeout: 0
 olcLogLevel: {{ ldaptoolbox_openldap_olcLogLevel }}
