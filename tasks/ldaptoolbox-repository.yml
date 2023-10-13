@@ -7,13 +7,65 @@
   - name: fetch repository key
     ansible.builtin.shell: "curl {{ ldaptoolbox_openldap_apt_key_url }} | gpg --dearmor > {{ ldaptoolbox_openldap_apt_keyrings_path }}/{{ ldaptoolbox_openldap_apt_repo_filename }}.gpg"
 
-  - name: add repository
+  - name: add debian repository
     ansible.builtin.apt_repository:
       repo: "{{ ldaptoolbox_openldap_apt_repo }}"
       filename: "{{ ldaptoolbox_openldap_apt_repo_filename }}"
       update_cache: yes
       state: present
-
   when:
   - ansible_os_family == "Debian"
+
+
+- name: centos repository
+  block:
+
+  - name: fetch repository key
+    ansible.builtin.shell: "rpm --import https://ltb-project.org/documentation/_static/RPM-GPG-KEY-LTB-project"
+
+  - name: setup epel repository
+    ansible.builtin.shell: |
+      dnf config-manager --set-enabled powertools
+      dnf install -y epel-release epel-next-release
+
+  - name: "setup ldaptoolbox repository on RHEL like version >= 8 "
+    copy:
+      content: |
+        [ltb-project]
+        name=LTB project packages
+        baseurl=https://ltb-project.org/rpm/openldap25/$releasever/$basearch
+        enabled=1
+        gpgcheck=1
+        gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-LTB-project
+      dest: /etc/yum.repos.d/ltb-project.repo
+  when: ( ansible_os_family == "RedHat" ) and ( ansible_distribution_major_version >= "8" )
+
+
+- name: centos 7 repository
+  block:
+
+  - name: fetch repository key
+    ansible.builtin.shell: "rpm --import https://ltb-project.org/documentation/_static/RPM-GPG-KEY-LTB-project"
+
+  - name: setup epel repository
+    ansible.builtin.shell: |
+      yum config-manager --set-enabled powertools
+      yum install -y epel-release epel-next-release
+
+  - name: "setup ldaptoolbox repository on RHEL like version = 7"
+    copy:
+      content: |
+        [ltb-project]
+        name=LTB project packages
+        baseurl=https://ltb-project.org/rpm/openldap25/$releasever/$basearch
+        enabled=1
+        gpgcheck=1
+        gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-LTB-project
+      dest: /etc/yum.repos.d/ltb-project.repo
+  when: ( ansible_os_family == "RedHat" ) and ( ansible_distribution_major_version == "7" )
+
+- name: "unsupported distribution check"
+  ansible.builtin.debug:
+    msg: "Unsupported distribution {{ ansible_distribution }} {{ ansible_distribution_major_version }}"
+  when: not ( (ansible_os_family == "Debian") or ( ( ansible_os_family == "RedHat" ) and ( ansible_distribution_major_version >= "7" ) ) )
 

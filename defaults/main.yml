@@ -27,6 +27,8 @@ ldaptoolbox_openldap_configuration_group: ldap
 ldaptoolbox_openldap_configuration_mode: 0600
 ldaptoolbox_openldap_sslgroup: ssl-cert
 
+ldaptoolbox_openldap_slapd_path: /usr/local/openldap
+
 # OpenLDAP LTB CLI command path
 ldaptoolbox_openldap_slapd_cli_cmd: /usr/local/openldap/sbin/slapd-cli
 
@@ -158,5 +160,4 @@ ldaptoolbox_openldap_overlay_refint_olcRefintNothing: "cn=nothing,{{ ldaptoolbox
 
 # Dynamic groups (dynlist)
 ldaptoolbox_openldap_overlay_dynlist_olcDlAttrSet: "groupOfURLs memberURL member+memberOf@groupOfNames*"
-
 

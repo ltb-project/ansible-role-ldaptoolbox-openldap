@@ -8,6 +8,8 @@
   package:
     name: "{{ ldaptoolbox_openldap_packages_dependencies }}"
     state: "{{ ldaptoolbox_openldap_packages_state }}"
+  when:
+  - ansible_os_family == "Debian"
 
 - name: install ldaptoolbox repository
   include_tasks: ldaptoolbox-repository.yml
@@ -17,33 +19,8 @@
     name: "{{ ldaptoolbox_openldap_packages_base }}"
     state: "{{ ldaptoolbox_openldap_packages_state }}"
 
-- name: allow ldap to read TLS certificates
-  ansible.builtin.user:
-    name: "{{ ldaptoolbox_openldap_configuration_owner }}"
-    groups: "{{ ldaptoolbox_openldap_sslgroup }}"
-    state: present
-  when: ldaptoolbox_openldap_olcTLSCertificateFile is defined
-
-- name: Ensure correct file ownership, group and permissions for CA
-  ansible.builtin.file:
-    path: "{{ ldaptoolbox_openldap_olcTLSCACertificateFile }}"
-    owner: "root"
-    group: "root"
-    mode: "644"
-
-- name: Ensure correct file ownership, group and permissions for certificate
-  ansible.builtin.file:
-    path: "{{ ldaptoolbox_openldap_olcTLSCertificateFile }}"
-    owner: "root"
-    group: "root"
-    mode: "644"
-
-- name: Ensure correct file ownership, group and permissions for key
-  ansible.builtin.file:
-    path: "{{ ldaptoolbox_openldap_olcTLSCertificateKeyFile }}"
-    owner: "root"
-    group: "{{ ldaptoolbox_openldap_sslgroup }}"
-    mode: "640"
+- name: setup certificates
+  include_tasks: ldaptoolbox-certificates.yml
 
 # Configuration
 # -------------

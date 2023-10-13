@@ -26,12 +26,16 @@ olcServerID: {{ ldaptoolbox_openldap_olcServerID }}
 olcSockbufMaxIncoming: 262143
 olcSockbufMaxIncomingAuth: 16777215
 olcThreads: 16
+{% if ldaptoolbox_openldap_olcTLSCACertificateFile %}
 olcTLSCACertificateFile: {{ ldaptoolbox_openldap_olcTLSCACertificateFile }}
-olcTLSCertificateFile:  {{ ldaptoolbox_openldap_olcTLSCertificateFile }}
-olcTLSCertificateKeyFile: {{ ldaptoolbox_openldap_olcTLSCertificateKeyFile }}
 olcTLSCRLCheck: none
 olcTLSVerifyClient: allow
+{% endif %}
+{% if ldaptoolbox_openldap_olcTLSCertificateFile %}
 olcTLSProtocolMin: {{ ldaptoolbox_openldap_olcTLSProtocolMin }}
+olcTLSCertificateFile:  {{ ldaptoolbox_openldap_olcTLSCertificateFile }}
+olcTLSCertificateKeyFile: {{ ldaptoolbox_openldap_olcTLSCertificateKeyFile }}
+{% endif %}
 olcToolThreads: 1
 olcWriteTimeout: 0
 olcLogLevel: {{ ldaptoolbox_openldap_olcLogLevel }}
@@ -88,8 +92,10 @@ olcAddContentAcl: TRUE
 olcLastMod: TRUE
 olcMaxDerefDepth: 15
 olcReadOnly: FALSE
+{% if ldaptoolbox_openldap_config_olcRootDN %}
 olcRootDN: {{ ldaptoolbox_openldap_config_olcRootDN }}
 olcRootPW: {{ ldaptoolbox_openldap_config_olcRootPW_hash }}
+{% endif %}
 olcSyncUseSubentry: FALSE
 olcMonitoring: FALSE
 
@@ -110,12 +116,16 @@ olcRootPW: {{ ldaptoolbox_openldap_database_olcRootPW_hash }}
 olcSyncUseSubentry: FALSE
 olcLastBind: TRUE
 {% for syncrepl in ldaptoolbox_openldap_syncrepl %}
-olcSyncrepl: rid={{ syncrepl.rid }} provider={{ syncrepl.provider }} bindmethod=simple timeout=0 network-timeout=0 binddn="{{ syncrepl.binddn }}" credentials="{{ syncrepl.password }}" keepalive=0:0:0 starttls=no {% if syncrepl.tlscert %}tls_cert="{{ syncrepl.tlscert }}" tls_key={{ syncrepl.tlskey }}" tls_cacert="{{ syncrepl.tlscacert }}" tls_reqcert="{{ syncrepl.tlsreqcert }}"{% endif %} filter="(objectclass=*)" searchbase="{{ syncrepl.searchbase }}" scope="{{ syncrepl.scope }}" schemachecking=on type="{{ syncrepl.type }}" retry="{{ syncrepl.retry }}"
+olcSyncrepl: rid={{ syncrepl.rid }} provider={{ syncrepl.provider }} bindmethod=simple timeout=0 network-timeout=0 binddn="{{ syncrepl.binddn }}" credentials="{{ syncrepl.password }}" keepalive=0:0:0 starttls=no {% if syncrepl.tlscert %}tls_cert="{{ syncrepl.tlscert }}" tls_key="{{ syncrepl.tlskey }}" tls_cacert="{{ syncrepl.tlscacert }}" tls_reqcert="{{ syncrepl.tlsreqcert }}"{% endif %} filter="(objectclass=*)" searchbase="{{ syncrepl.searchbase }}" scope="{{ syncrepl.scope }}" schemachecking=on type="{{ syncrepl.type }}" retry="{{ syncrepl.retry }}"
 {% endfor %}
 {% if ldaptoolbox_openldap_syncrepl|length > 0 %}
 olcMultiProvider: TRUE
 {% endif %}
+{% if ldaptoolbox_openldap_monitor_olcRootDN %}
 olcMonitoring: TRUE
+{% else %}
+olcMonitoring: FALSE
+{% endif %}
 {% for index in ldaptoolbox_openldap_database_olcDbIndexes %}
 olcDbIndex: {{ index }}
 {% endfor %}
@@ -149,6 +159,7 @@ objectClass: olcDynamicList
 olcOverlay: {3}dynlist
 olcDlAttrSet: {{ ldaptoolbox_openldap_overlay_dynlist_olcDlAttrSet }}
 
+{% if ldaptoolbox_openldap_monitor_olcRootDN %}
 dn: olcDatabase={2}monitor,cn=config
 objectClass: olcDatabaseConfig
 olcDatabase: {2}monitor
@@ -160,4 +171,4 @@ olcMaxDerefDepth: 15
 olcReadOnly: FALSE
 olcSyncUseSubentry: FALSE
 olcMonitoring: FALSE
-
+{% endif %}
