@@ -8,6 +8,8 @@
   package:
     name: "{{ ldaptoolbox_openldap_packages_dependencies }}"
     state: "{{ ldaptoolbox_openldap_packages_state }}"
+  when:
+  - ansible_os_family == "Debian"
 
 - name: install ldaptoolbox repository
   include_tasks: ldaptoolbox-repository.yml
