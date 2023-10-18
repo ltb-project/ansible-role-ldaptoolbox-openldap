@@ -25,7 +25,7 @@ ldaptoolbox_openldap_configuration_prefix: "config"
 ldaptoolbox_openldap_configuration_owner: ldap
 ldaptoolbox_openldap_configuration_group: ldap
 ldaptoolbox_openldap_configuration_mode: 0600
-ldaptoolbox_openldap_sslgroup: ssl-cert
+ldaptoolbox_openldap_sslgroup: "{{ 'root' if ansible_os_family == 'RedHat' else 'ssl-cert' }}"
 
 # OpenLDAP LTB CLI command path
 ldaptoolbox_openldap_slapd_cli_cmd: /usr/local/openldap/sbin/slapd-cli
@@ -44,9 +44,9 @@ ldaptoolbox_openldap_custom_schema_list: []
 ldaptoolbox_openldap_schema_dir: /usr/local/openldap/etc/openldap/schema
 
 # Certificates
-ldaptoolbox_openldap_olcTLSCACertificateFile: /etc/ssl/certs/ca-certificates.crt
-ldaptoolbox_openldap_olcTLSCertificateFile: /etc/ssl/certs/ssl-cert-snakeoil.pem
-ldaptoolbox_openldap_olcTLSCertificateKeyFile: /etc/ssl/private/ssl-cert-snakeoil.key
+ldaptoolbox_openldap_olcTLSCACertificateFile: "{{ '' if ansible_os_family == 'RedHat' else '/etc/ssl/certs/ca-certificates.crt' }}"
+ldaptoolbox_openldap_olcTLSCertificateFile: "{{ '' if ansible_os_family == 'RedHat' else '/etc/ssl/certs/ssl-cert-snakeoil.pem' }}"
+ldaptoolbox_openldap_olcTLSCertificateKeyFile: "{{ '' if ansible_os_family == 'RedHat' else '/etc/ssl/private/ssl-cert-snakeoil.key' }}"
 ldaptoolbox_openldap_olcTLSProtocolMin: 3.3
 
 # Log level

@@ -63,22 +63,19 @@ Run the corresponding task with:
 ansible-playbook tests/monitoring.yml -i tests/inventory
 ```
 
-Test for RHEL
--------------
 
-here sample of what certificates configuration can be :
+If you want to install openldap on RHEL-like OS with certificates, you can define them in `tests/standalone.yml`:
 
 ```
-ldaptoolbox_openldap_sslgroup=root
 ldaptoolbox_openldap_olcTLSCACertificateFile=/etc/pki/ca-trust/source/anchors/ca-cert.pem
 ldaptoolbox_openldap_olcTLSCertificateFile=/etc/pki/tls/certs/ldaps-cert.pem
-ldaptoolbox_openldap_olcTLSCertificateKeyFile=/etc/pki/tls/private/ldaps.key"
+ldaptoolbox_openldap_olcTLSCertificateKeyFile=/etc/pki/tls/private/ldaps.key
 ```
 
-can be run with extra-vars :
+You can also overload these variables in the command line:
 
 ```
-ansible-playbook tests/standalone.yml -i tests/inventory --ask-vault-pass --extra-vars "ldaptoolbox_openldap_sslgroup=root ldaptoolbox_openldap_olcTLSCACertificateFile=/etc/pki/ca-trust/source/anchors/ca-cert.pem ldaptoolbox_openldap_olcTLSCertificateFile=/etc/pki/tls/certs/ldaps-cert.pem ldaptoolbox_openldap_olcTLSCertificateKeyFile=/etc/pki/tls/private/ldaps.key"
+ansible-playbook tests/standalone.yml -i tests/inventory --ask-vault-pass --extra-vars "ldaptoolbox_openldap_olcTLSCACertificateFile=/etc/pki/ca-trust/source/anchors/ca-cert.pem ldaptoolbox_openldap_olcTLSCertificateFile=/etc/pki/tls/certs/ldaps-cert.pem ldaptoolbox_openldap_olcTLSCertificateKeyFile=/etc/pki/tls/private/ldaps.key"
 ```
 
 License
