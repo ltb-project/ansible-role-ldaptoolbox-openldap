@@ -23,6 +23,10 @@
   - name: fetch repository key
     ansible.builtin.shell: "rpm --import https://ltb-project.org/documentation/_static/RPM-GPG-KEY-LTB-project"
 
+  - name: install EPEL repository
+    ansible.builtin.shell: |
+      dnf install -y epel-release
+
   - name: "setup ldaptoolbox repository on RHEL like version >= 7 "
     copy:
       content: |

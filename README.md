@@ -7,6 +7,8 @@ Requirements
 ------------
 
 - ansible
+- ssh
+- git if you get this role from the git repository
 - HTTP connection to the LTB-project's repository
 
 Targets OS supported : Debian and RHEL like from version 7.
