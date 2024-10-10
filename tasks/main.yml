@@ -4,49 +4,58 @@
 # Installation
 # ------------
 
-- name: install package dependencies
-  package:
-    name: "{{ ldaptoolbox_openldap_packages_dependencies }}"
-    state: "{{ ldaptoolbox_openldap_packages_state }}"
-  when:
-  - ansible_os_family == "Debian"
+- block:
 
-- name: install ldaptoolbox repository
-  include_tasks: ldaptoolbox-repository.yml
+  - name: install package dependencies
+    package:
+      name: "{{ ldaptoolbox_openldap_packages_dependencies }}"
+      state: "{{ ldaptoolbox_openldap_packages_state }}"
+    when:
+    - ansible_os_family == "Debian"
 
-- name: install openldap packages
-  package:
-    name: "{{ ldaptoolbox_openldap_packages_base }}"
-    state: "{{ ldaptoolbox_openldap_packages_state }}"
+  - name: install ldaptoolbox repository
+    include_tasks: ldaptoolbox-repository.yml
 
-- name: setup certificates
-  include_tasks: ldaptoolbox-certificates.yml
+  - name: install openldap packages
+    package:
+      name: "{{ ldaptoolbox_openldap_packages_base }}"
+      state: "{{ ldaptoolbox_openldap_packages_state }}"
+    become: true
+
+  - name: setup certificates
+    include_tasks: ldaptoolbox-certificates.yml
+
+  become: true
 
 # Configuration
 # -------------
 
-- name: deploy config file
-  ansible.builtin.template:
-    src: ".{{ ldaptoolbox_openldap_configuration_backup_dir }}/{{ ldaptoolbox_openldap_configuration_prefix }}.ldif"
-    dest: "{{ ldaptoolbox_openldap_configuration_backup_dir }}/{{ ldaptoolbox_openldap_configuration_prefix }}-{{ ldaptoolbox_openldap_configuration_timestamp }}.ldif"
-    owner: "{{ ldaptoolbox_openldap_configuration_owner }}"
-    group: "{{ ldaptoolbox_openldap_configuration_group }}"
-    mode: "{{ ldaptoolbox_openldap_configuration_mode }}"
+- block:
 
-- name: deploy custom schema
-  ansible.builtin.template:
-    src: "{{ ldaptoolbox_openldap_custom_schema_srcdir }}/{{ item }}"
-    dest: "{{ ldaptoolbox_openldap_schema_dir }}/{{ item }}"
-    owner: "{{ ldaptoolbox_openldap_configuration_owner }}"
-    group: "{{ ldaptoolbox_openldap_configuration_group }}"
-  loop: "{{ ldaptoolbox_openldap_custom_schema_list }}"
-  when: ldaptoolbox_openldap_custom_schema_list is defined
+  - name: deploy config file
+    ansible.builtin.template:
+      src: ".{{ ldaptoolbox_openldap_configuration_backup_dir }}/{{ ldaptoolbox_openldap_configuration_prefix }}.ldif"
+      dest: "{{ ldaptoolbox_openldap_configuration_backup_dir }}/{{ ldaptoolbox_openldap_configuration_prefix }}-{{ ldaptoolbox_openldap_configuration_timestamp }}.ldif"
+      owner: "{{ ldaptoolbox_openldap_configuration_owner }}"
+      group: "{{ ldaptoolbox_openldap_configuration_group }}"
+      mode: "{{ ldaptoolbox_openldap_configuration_mode }}"
 
-- name: load config from file
-  ansible.builtin.shell: "{{ ldaptoolbox_openldap_slapd_cli_cmd }} restoreconfig"
+  - name: deploy custom schema
+    ansible.builtin.template:
+      src: "{{ ldaptoolbox_openldap_custom_schema_srcdir }}/{{ item }}"
+      dest: "{{ ldaptoolbox_openldap_schema_dir }}/{{ item }}"
+      owner: "{{ ldaptoolbox_openldap_configuration_owner }}"
+      group: "{{ ldaptoolbox_openldap_configuration_group }}"
+    loop: "{{ ldaptoolbox_openldap_custom_schema_list }}"
+    when: ldaptoolbox_openldap_custom_schema_list is defined
+
+  - name: load config from file
+    ansible.builtin.shell: "{{ ldaptoolbox_openldap_slapd_cli_cmd }} restoreconfig"
+
+  become: true
 
 # Import Data
 # -----------
 
 #TODO
-
+...
