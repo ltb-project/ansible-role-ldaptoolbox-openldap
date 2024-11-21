@@ -1,31 +1,61 @@
+- name: Create certificate directory
+  ansible.builtin.file:
+    path: "{{ ldaptoolbox_openldap_olcTLSCACertificateFile | dirname }}"
+    state: directory
+    mode: '0755'
+  when: ( ldaptoolbox_openldap_olcTLSCACertificateFile is defined ) and ( ldaptoolbox_openldap_olcTLSCACertificateFile )
+
+- name: Deploy TLS CA certificate
+  ansible.builtin.copy:
+    content: '{{ ldaptoolbox_openldap_olcTLSCACertificateFile_content }}'
+    dest: "{{ ldaptoolbox_openldap_olcTLSCACertificateFile }}"
+    owner: root
+    group: ldap
+    mode: 0644
+  when: ( ldaptoolbox_openldap_olcTLSCACertificateFile is defined ) and ( ldaptoolbox_openldap_olcTLSCACertificateFile )
+
+- name: Deploy TLS certificate
+  ansible.builtin.copy:
+    content: '{{ ldaptoolbox_openldap_olcTLSCertificateFile_content }}'
+    dest: "{{ ldaptoolbox_openldap_olcTLSCertificateFile }}"
+    owner: root
+    group: ldap
+    mode: 0644
+  when: ( ldaptoolbox_openldap_olcTLSCACertificateFile is defined ) and ( ldaptoolbox_openldap_olcTLSCACertificateFile )
+
+- name: Deploy TLS key file
+  ansible.builtin.copy:
+    content: '{{ ldaptoolbox_openldap_olcTLSCertificateKeyFile_content }}'
+    dest: "{{ ldaptoolbox_openldap_olcTLSCertificateKeyFile }}"
+    owner: root
+    group: ldap
+    mode: 0640
+  no_log: true
+  when: ( ldaptoolbox_openldap_olcTLSCertificateKeyFile is defined ) and ( ldaptoolbox_openldap_olcTLSCertificateKeyFile )
+
+- name: Deploy Diffie-Hellman param
+  ansible.builtin.copy:
+    content: '{{ ldaptoolbox_openldap_olcTLSDHParamFile_content }}'
+    dest: "{{ ldaptoolbox_openldap_olcTLSDHParamFile }}"
+    owner: root
+    group: ldap
+    mode: 0640
+  no_log: true
+  when: ( ldaptoolbox_openldap_olcTLSDHParamFile is defined ) and ( ldaptoolbox_openldap_olcTLSDHParamFile )
 
 - name: allow ldap to read TLS certificates
   ansible.builtin.user:
     name: "{{ ldaptoolbox_openldap_configuration_owner }}"
     groups: "{{ ldaptoolbox_openldap_sslgroup }}"
     state: present
-  when: ( ldaptoolbox_openldap_olcTLSCertificateFile )
+  when: ( ldaptoolbox_openldap_olcTLSCertificateFile is defined ) and ( ldaptoolbox_openldap_olcTLSCertificateFile )
 
-- name: Ensure correct file ownership, group and permissions for CA
-  ansible.builtin.file:
-    path: "{{ ldaptoolbox_openldap_olcTLSCACertificateFile }}"
-    owner: "root"
-    group: "root"
-    mode: "644"
-  when: ( ldaptoolbox_openldap_olcTLSCACertificateFile )
-
-- name: Ensure correct file ownership, group and permissions for certificate
-  ansible.builtin.file:
-    path: "{{ ldaptoolbox_openldap_olcTLSCertificateFile }}"
-    owner: "root"
-    group: "root"
-    mode: "644"
-  when: ( ldaptoolbox_openldap_olcTLSCertificateFile )
-
-- name: Ensure correct file ownership, group and permissions for key
-  ansible.builtin.file:
-    path: "{{ ldaptoolbox_openldap_olcTLSCertificateKeyFile }}"
-    owner: "root"
-    group: "{{ ldaptoolbox_openldap_sslgroup }}"
-    mode: "640"
-  when: ( ldaptoolbox_openldap_olcTLSCertificateKeyFile )
+- name: Adapt ldap.conf file with CA certificate
+  ansible.builtin.blockinfile:
+    path: /usr/local/openldap/etc/openldap/ldap.conf
+    marker: "# {mark} ANSIBLE MANAGED CONFIGURATION"
+    insertafter: '^#DEREF'
+    block: |
+      TLS_CACERT {{ ldaptoolbox_openldap_olcTLSCACertificateFile }}
+      TLS_REQCERT demand
+  when: ( ldaptoolbox_openldap_olcTLSCACertificateFile is defined ) and ( ldaptoolbox_openldap_olcTLSCACertificateFile )

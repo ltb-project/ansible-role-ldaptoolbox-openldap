@@ -22,7 +22,7 @@ You'll need to store the hash value for your admin passwords. You'll get it like
 /usr/local/openldap/sbin/slappasswd -o module-path="/usr/local/openldap/libexec/openldap" -o module-load="argon2" -h "{ARGON2}" -s "password"
 ```
 
-Store the passwords in the vault file in: `tests/credentials-vault.yml`
+Store the passwords in the vault file in: `playbook/credentials-vault.yml`
 
 
 Playbook examples
@@ -38,45 +38,48 @@ ansible.cfg
 roles_path=../
 ```
 
-See `tests/standalone.yml`
+See `playbook/standalone.yml`
 
 Run playbook with:
 
+
 ```
-ansible-playbook tests/standalone.yml -i tests/inventory --ask-vault-pass
+ansible-playbook playbook/standalone.yml -i playbook/inventory --ask-vault-pass
+```
+
+You can also run an openldap cluster with 2 masters and 2 slaves with the multimaster playbook:
+
+```
+ansible-playbook playbook/multimaster.yml -i playbook/inventory --ask-vault-pass
 ```
 
 or:
 
 ```
-ansible-playbook tests/standalone.yml -i tests/inventory --vault-password-file .vault_pass
+ansible-playbook playbook/multimaster.yml -i playbook/inventory --vault-password-file .vault_pass
 ```
 
-If you need a two-nodes multimaster example, give a look at `tests/multimaster1.yml` and `tests/multimaster2.yml`
+For using this cluster, you must create the corresponding machines and declare the routes, as defined in `playbook/inventory`.
+
+You also have to fill the certificate in `playbook/certificates-vault.yml`. You can use this command for editing the file: (the default password is: secret)
+
+```
+ansible-vault edit playbook/certificates-vault.yml
+```
 
 
-Give a look to `tests/monitoring.yml` for an example of playbook that deploys LTB monitoring and statistics tools
+Give a look at `playbook/group_vars/prod.yml`, `playbook/host_vars/master1.yml` and `playbook/host_vars/master2.yml` for variable customization
+You can also use `--extra-vars variable=value` at the command line for overloading any variable.
+
+
+Give a look to `playbook/monitoring.yml` for an example of playbook that deploys LTB monitoring and statistics tools
 
 Run the corresponding task with: 
 
 ```
-ansible-playbook tests/monitoring.yml -i tests/inventory
+ansible-playbook playbook/monitoring.yml -i playbook/inventory
 ```
 
-
-If you want to install openldap on RHEL-like OS with certificates, you can define them in `tests/standalone.yml`:
-
-```
-ldaptoolbox_openldap_olcTLSCACertificateFile=/etc/pki/ca-trust/source/anchors/ca-cert.pem
-ldaptoolbox_openldap_olcTLSCertificateFile=/etc/pki/tls/certs/ldaps-cert.pem
-ldaptoolbox_openldap_olcTLSCertificateKeyFile=/etc/pki/tls/private/ldaps.key
-```
-
-You can also overload these variables in the command line:
-
-```
-ansible-playbook tests/standalone.yml -i tests/inventory --ask-vault-pass --extra-vars "ldaptoolbox_openldap_olcTLSCACertificateFile=/etc/pki/ca-trust/source/anchors/ca-cert.pem ldaptoolbox_openldap_olcTLSCertificateFile=/etc/pki/tls/certs/ldaps-cert.pem ldaptoolbox_openldap_olcTLSCertificateKeyFile=/etc/pki/tls/private/ldaps.key"
-```
 
 License
 -------

@@ -4,7 +4,7 @@
 - name: debian repository
   block:
 
-  - name: fetch repository key
+  - name: fetch LTB-project repository key
     ansible.builtin.shell: "curl {{ ldaptoolbox_openldap_apt_key_url }} | gpg --dearmor > {{ ldaptoolbox_openldap_apt_keyrings_path }}/{{ ldaptoolbox_openldap_apt_repo_filename }}.gpg"
 
   - name: add debian repository
@@ -20,22 +20,25 @@
 - name: centos repository
   block:
 
-  - name: fetch repository key
-    ansible.builtin.shell: "rpm --import https://ltb-project.org/documentation/_static/RPM-GPG-KEY-LTB-project"
+  - name: fetch LTB-project repository key
+    ansible.builtin.rpm_key:
+      state: present
+      key: https://ltb-project.org/documentation/_static/RPM-GPG-KEY-LTB-PROJECT-SECURITY
 
   - name: install EPEL repository
-    ansible.builtin.shell: |
-      dnf install -y epel-release
+    ansible.builtin.yum:
+      name: epel-release
+      state: present
 
   - name: "setup ldaptoolbox repository on RHEL like version >= 7 "
     copy:
       content: |
         [ltb-project]
         name=LTB project packages
-        baseurl=https://ltb-project.org/rpm/openldap25/$releasever/$basearch
+        baseurl=https://ltb-project.org/rpm/openldap26/$releasever/$basearch
         enabled=1
         gpgcheck=1
-        gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-LTB-project
+        gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-LTB-project-security
       dest: /etc/yum.repos.d/ltb-project.repo
   when: ( ansible_os_family == "RedHat" ) and ( ansible_distribution_major_version >= "7" )
 

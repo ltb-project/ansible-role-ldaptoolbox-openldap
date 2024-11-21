@@ -1,0 +1,7 @@
+prod:
+  hosts:
+    master1:
+    master2:
+    slave1:
+    slave2:
+    standalone:
