@@ -1,0 +1,77 @@
+################################################################################
+# example of playbook for 2 multi-master cluster (1st node)
+################################################################################
+---
+- hosts: prod
+  remote_user: root
+  vars_files:
+    - credentials-vault.yml
+    - certificates-vault.yml
+  vars:
+    # Define suffix
+    - ldaptoolbox_openldap_suffix: "dc=my-organization,dc=com"
+    # include extra schema
+    - ldaptoolbox_openldap_custom_schema_srcdir: "{{ playbook_dir }}/files/ldaptoolbox.oldap/usr/local/openldap/etc/openldap/schema"
+    - ldaptoolbox_openldap_custom_schema_list: [ custom.ldif ]
+    - ldaptoolbox_openldap_olcTLSCACertificateFile: "{{ '/usr/local/openldap/etc/openldap/certs/ca.crt' }}"
+    - ldaptoolbox_openldap_olcTLSCertificateFile: "{{ '/usr/local/openldap/etc/openldap/certs/openldap.crt' }}"
+    - ldaptoolbox_openldap_olcTLSCertificateKeyFile: "{{ '/usr/local/openldap/etc/openldap/certs/openldap.key' }}"
+    - ldaptoolbox_openldap_olcTLSDHParamFile: "{{ '/usr/local/openldap/etc/openldap/certs/dhparams' }}"
+    # Accounts and passwords
+    - ldaptoolbox_openldap_config_olcRootDN: cn=admin,cn=config
+    - ldaptoolbox_openldap_config_olcRootPW_hash: "{{ ldaptoolbox_openldap_config_olcRootPW_hash_vault }}"
+    - ldaptoolbox_openldap_database_olcRootDN: "cn=admin,{{ ldaptoolbox_openldap_suffix }}"
+    - ldaptoolbox_openldap_database_olcRootPW_hash: "{{ ldaptoolbox_openldap_database_olcRootPW_hash_vault }}"
+    - ldaptoolbox_openldap_monitor_olcRootDN: "cn=monitor"
+    - ldaptoolbox_openldap_monitor_olcRootPW_hash: "{{ ldaptoolbox_openldap_monitor_olcRootPW_hash_vault }}"
+    # unlimitation for synchronization account (to be defined in data)
+    - ldaptoolbox_openldap_database_olcLimits:
+         - "dn.base=uid=syncrepl,ou=accounts,ou=infrastructure,{{ ldaptoolbox_openldap_suffix }} size=unlimited  time=unlimited"
+         - "dn.base=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth size=unlimited  time=unlimited"
+    # ACLs from default role variables
+    # Replication
+    # overlay configuration from default role variables
+    - ldaptoolbox_openldap_olcAttributeOptions: []
+    - ldaptoolbox_openldap_olcSaslHost: localhost
+    - ldaptoolbox_openldap_olcTLSCipherSuite: "TLSv1.3:TLSv1.2"
+    - ldaptoolbox_openldap_olcLogLevel: stats
+    - ldaptoolbox_openldap_olcLogFile: "/var/log/slapd-ltb/slapd.log"
+    - ldaptoolbox_openldap_olcLogFileRotate: "30 1024 24"
+    # Size limit
+    - ldaptoolbox_openldap_olcSizeLimit: 1000
+    # Enabled modules
+    - ldaptoolbox_openldap_module_list:
+         - "argon2.la"
+         - "pw-pbkdf2.la"
+         - "pw-sha2.la"
+         - "back_mdb.la"
+         - "dynlist.la"
+         - "memberof.la"
+         - "ppolicy.la"
+         - "syncprov.la"
+         - "unique.la"
+    - ldaptoolbox_olcPasswordHash: "{SSHA256}"
+    # Access rights
+    - ldaptoolbox_openldap_access_list:
+         - to attrs=userPassword  by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" =wxd  by group/groupOfNames/member.exact="cn=admin,ou=groups,{{ ldaptoolbox_openldap_suffix }}" =wxd  by self =wxd  by * auth
+         - to *  by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" manage  by group/groupOfNames/member.exact="cn=admin,ou=groups,{{ ldaptoolbox_openldap_suffix }}" write  by users read
+    # Indexes definition
+    - ldaptoolbox_openldap_database_olcDbIndexes:
+         - "entryCSN,entryUUID eq"
+         - "objectClass eq"
+         - "cn eq,sub"
+         - "uid pres,eq"
+         - "givenName pres,eq,sub"
+         - "l pres,eq"
+         - "employeeType pres,eq"
+         - "mail pres,eq,sub"
+         - "sn pres,eq,sub"
+    - ldaptoolbox_openldap_database_olcDbMaxSize: "4294967296"
+    - ldaptoolbox_openldap_overlay_syncprov_olcSpCheckpoint: "100 10"
+    - ldaptoolbox_openldap_overlay_syncprov_olcSpSessionlog: "100"
+    # Password policy
+    - ldaptoolbox_openldap_overlay_ppolicy_olcPPolicyDefault: "cn=default,ou=ppolicies,{{ ldaptoolbox_openldap_suffix }}"
+    - ldaptoolbox_openldap_overlay_ppolicy_olcPPolicyHashCleartext: "TRUE"
+    - ldaptoolbox_openldap_overlay_ppolicy_olcPPolicyUseLockout: "FALSE"
+  roles:
+    - ansible-role-ldaptoolbox-openldap

@@ -1,0 +1,25 @@
+---
+# host_vars file for master2
+ldaptoolbox_openldap_olcServerID: 2
+ldaptoolbox_openldap_syncrepl:
+  - rid: "001"
+    provider: "ldaps://master1"
+    tlscert: "{{ ldaptoolbox_openldap_olcTLSCertificateFile }}"
+    tlskey: "{{ ldaptoolbox_openldap_olcTLSCertificateKeyFile }}"
+    tlscacert: "{{ ldaptoolbox_openldap_olcTLSCACertificateFile }}"
+    tlsreqcert: "demand"
+    binddn: "uid=replicationmaster,ou=replication,ou=special users,{{ ldaptoolbox_openldap_suffix }}"
+    password: "{{ ldaptoolbox_openldap_syncrepl_password_vault }}"
+    searchbase: "{{ ldaptoolbox_openldap_suffix }}"
+    scope: "sub"
+    type: "refreshAndPersist"
+    retry: "60 +"
+    timeout: "0"
+    networktimeout: "0"
+    keepalive: "0:0:0"
+    starttls: "no"
+    tls_cipher_suite: "TLSv1.3:TLSv1.2"
+    tls_protocol_min: "3.4"
+    tls_crlcheck: "none"
+    filter: "(objectclass=*)"
+    schemachecking: "on"

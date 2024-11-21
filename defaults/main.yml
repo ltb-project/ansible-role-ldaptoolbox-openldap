@@ -9,12 +9,12 @@ ldaptoolbox_openldap_apt_key_url: "https://ltb-project.org/documentation/_static
 ldaptoolbox_openldap_apt_key_id: "3FC3FD92ABA3975D2BEB95A70AC51F926D45BFC5"
 ldaptoolbox_openldap_apt_repo_filename: "ltb-project-openldap"
 ldaptoolbox_openldap_apt_keyrings_path: /usr/share/keyrings
-ldaptoolbox_openldap_apt_repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/ltb-project-openldap.gpg] http://ltb-project.org/debian/openldap25/bullseye bullseye main"
+ldaptoolbox_openldap_apt_repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/ltb-project-openldap.gpg] http://ltb-project.org/debian/openldap26/bookworm bookworm main"
 ldaptoolbox_openldap_apt_validate_certs: "true"
 
 # Packages
 ldaptoolbox_openldap_packages_base: openldap-ltb, openldap-ltb-contrib-overlays, openldap-ltb-mdb-utils
-ldaptoolbox_openldap_packages_dependencies: libcrack2, curl
+ldaptoolbox_openldap_packages_dependencies: libcrack2, curl, gpg
 ldaptoolbox_openldap_packages_state: present
 
 # Filesystem
@@ -25,7 +25,7 @@ ldaptoolbox_openldap_configuration_prefix: "config"
 ldaptoolbox_openldap_configuration_owner: ldap
 ldaptoolbox_openldap_configuration_group: ldap
 ldaptoolbox_openldap_configuration_mode: 0600
-ldaptoolbox_openldap_sslgroup: "{{ 'root' if ansible_os_family == 'RedHat' else 'ssl-cert' }}"
+ldaptoolbox_openldap_sslgroup: "{{ 'root' }}"
 
 # OpenLDAP LTB CLI command path
 ldaptoolbox_openldap_slapd_cli_cmd: /usr/local/openldap/sbin/slapd-cli
@@ -34,6 +34,10 @@ ldaptoolbox_openldap_slapd_cli_cmd: /usr/local/openldap/sbin/slapd-cli
 
 # OpenLDAP configuration
 ################################################################################
+
+# Options
+ldaptoolbox_openldap_olcAttributeOptions:
+  - lang-
 
 # Suffix
 ldaptoolbox_openldap_suffix: "{{ ldaptoolbox_openldap_suffix }}"
@@ -44,20 +48,25 @@ ldaptoolbox_openldap_custom_schema_list: []
 ldaptoolbox_openldap_schema_dir: /usr/local/openldap/etc/openldap/schema
 
 # Certificates
-ldaptoolbox_openldap_olcTLSCACertificateFile: "{{ '' if ansible_os_family == 'RedHat' else '/etc/ssl/certs/ca-certificates.crt' }}"
-ldaptoolbox_openldap_olcTLSCertificateFile: "{{ '' if ansible_os_family == 'RedHat' else '/etc/ssl/certs/ssl-cert-snakeoil.pem' }}"
-ldaptoolbox_openldap_olcTLSCertificateKeyFile: "{{ '' if ansible_os_family == 'RedHat' else '/etc/ssl/private/ssl-cert-snakeoil.key' }}"
+ldaptoolbox_openldap_olcTLSCipherSuite: "TLSv1.3:TLSv1.2"
 ldaptoolbox_openldap_olcTLSProtocolMin: 3.3
 
 # Log level
 ldaptoolbox_openldap_olcLogLevel: stats
+ldaptoolbox_openldap_olcLogFile: "/var/log/slapd-ltb/slapd.log"
+ldaptoolbox_openldap_olcLogFileRotate: "30 1024 24"
+
+# Size limit
+ldaptoolbox_openldap_olcSizeLimit: 1000
 
 # Enabled modules
 ldaptoolbox_openldap_module_list:
   - argon2.la
   - pw-pbkdf2.la
+  - pw-sha2.la
   - back_mdb.la
   - dynlist.la
+  - memberof.la
   - ppolicy.la
   - syncprov.la
   - unique.la
@@ -104,59 +113,19 @@ ldaptoolbox_openldap_database_olcLimits:
 
 # Indexes definition
 ldaptoolbox_openldap_database_olcDbIndexes:
+  - "entryCSN,entryUUID eq"
   - "objectClass eq"
-  - "entryUUID eq"
-  - "entryCSN eq"
-  - "cn pres,eq,sub"
-  - "uid pres,eq,sub"
+  - "cn eq,sub"
+  - "uid pres,eq"
+  - "givenName pres,eq,sub"
+  - "l pres,eq"
+  - "employeeType pres,eq"
+  - "mail pres,eq,sub"
+  - "sn pres,eq,sub"
 
-########################
-# Replication directives
-########################
-
-ldaptoolbox_openldap_olcServerID: 1
-ldaptoolbox_openldap_syncrepl:
-- rid: "001"
-  provider: "ldap://localhost:389/"
-  tlscert: "{{ ldaptoolbox_openldap_olcTLSCertificateFile }}"
-  tlskey: "{{ ldaptoolbox_openldap_olcTLSCertificateKeyFile }}"
-  tlscacert: "{{ ldaptoolbox_openldap_olcTLSCACertificateFile }}"
-  tlsreqcert: "demand"
-  binddn: "uid=syncrepl,ou=accounts,ou=infrastructure,{{ ldaptoolbox_openldap_suffix }}"
-  password: "{{ ldaptoolbox_openldap_syncrepl_password_vault }}"
-  searchbase: "{{ ldaptoolbox_openldap_suffix }}"
-  scope: "sub"
-  type: "refreshAndPersist"
-  retry: "5 5 300 +"
-- rid: "002"
-  provider: "ldap://localhost:389/"
-  tlscert: "{{ ldaptoolbox_openldap_olcTLSCertificateFile }}"
-  tlskey: "{{ ldaptoolbox_openldap_olcTLSCertificateKeyFile }}"
-  tlscacert: "{{ ldaptoolbox_openldap_olcTLSCACertificateFile }}"
-  tlsreqcert: "demand"
-  binddn: "uid=syncrepl,ou=accounts,ou=infrastructure,{{ ldaptoolbox_openldap_suffix }}"
-  password: "{{ ldaptoolbox_openldap_syncrepl_password_vault }}"
-  searchbase: "{{ ldaptoolbox_openldap_suffix }}"
-  scope: "sub"
-  type: "refreshAndPersist"
-  retry: "5 5 300 +"
 ldaptoolbox_openldap_overlay_syncprov_olcSpCheckpoint: "100 10"
 ldaptoolbox_openldap_overlay_syncprov_olcSpSessionlog: "100"
 
 ########################
 # Overlays configuration
 ########################
-
-# Password policy
-ldaptoolbox_openldap_overlay_ppolicy_olcPPolicyDefault: "cn=default,ou=ppolicies,{{ ldaptoolbox_openldap_suffix }}"
-ldaptoolbox_openldap_overlay_ppolicy_olcPPolicyHashCleartext: "TRUE"
-ldaptoolbox_openldap_overlay_ppolicy_olcPPolicyUseLockout: "TRUE"
-
-# Referential integrity
-ldaptoolbox_openldap_overlay_refint_olcRefintAttribute: "member"
-ldaptoolbox_openldap_overlay_refint_olcRefintNothing: "cn=nothing,{{ ldaptoolbox_openldap_suffix }}"
-
-# Dynamic groups (dynlist)
-ldaptoolbox_openldap_overlay_dynlist_olcDlAttrSet: "groupOfURLs memberURL member+memberOf@groupOfNames*"
-
-
