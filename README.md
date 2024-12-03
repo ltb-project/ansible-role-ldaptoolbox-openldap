@@ -67,6 +67,12 @@ You also have to fill the certificate in `playbook/certificates-vault.yml`. You 
 ansible-vault edit playbook/certificates-vault.yml
 ```
 
+If you want the certificates to be deployed by ansible, you can enable it by adding this variable in your playbook:
+
+```
+ldaptoolbox_openldap_deploy_certificates: true
+```
+
 
 Give a look at `playbook/group_vars/prod.yml`, `playbook/host_vars/master1.yml` and `playbook/host_vars/master2.yml` for variable customization
 You can also use `--extra-vars variable=value` at the command line for overloading any variable.
