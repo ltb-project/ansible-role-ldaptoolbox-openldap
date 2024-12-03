@@ -13,6 +13,8 @@
     # include extra schema
     - ldaptoolbox_openldap_custom_schema_srcdir: "{{ playbook_dir }}/files/ldaptoolbox.oldap/usr/local/openldap/etc/openldap/schema"
     - ldaptoolbox_openldap_custom_schema_list: [ custom.ldif ]
+    # Deploy certificates
+    - ldaptoolbox_openldap_deploy_certificates: true
     - ldaptoolbox_openldap_olcTLSCACertificateFile: "{{ '/usr/local/openldap/etc/openldap/certs/ca.crt' }}"
     - ldaptoolbox_openldap_olcTLSCertificateFile: "{{ '/usr/local/openldap/etc/openldap/certs/openldap.crt' }}"
     - ldaptoolbox_openldap_olcTLSCertificateKeyFile: "{{ '/usr/local/openldap/etc/openldap/certs/openldap.key' }}"
