@@ -3,6 +3,9 @@
 # Defaults variables for OpenLDAP role
 ################################################################################
 
+# Deploy certificate
+ldaptoolbox_openldap_deploy_certificates: false
+
 
 # apt package repository
 ldaptoolbox_openldap_apt_key_url: "https://ltb-project.org/documentation/_static/RPM-GPG-KEY-LTB-project"

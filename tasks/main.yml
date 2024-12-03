@@ -21,6 +21,7 @@
 
 - name: setup certificates
   include_tasks: ldaptoolbox-certificates.yml
+  when: ldaptoolbox_openldap_deploy_certificates|bool == true
 
 # Configuration
 # -------------
