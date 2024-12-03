@@ -35,7 +35,7 @@
       content: |
         [ltb-project]
         name=LTB project packages
-        baseurl=https://ltb-project.org/rpm/openldap26/$releasever/$basearch
+        baseurl=https://ltb-project.org/rpm/openldap{{ '25' if ldaptoolbox_openldap_version == '2.5' else '26' }}/$releasever/$basearch
         enabled=1
         gpgcheck=1
         gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-LTB-project-security

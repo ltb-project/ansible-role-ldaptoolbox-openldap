@@ -73,6 +73,12 @@ If you want the certificates to be deployed by ansible, you can enable it by add
 ldaptoolbox_openldap_deploy_certificates: true
 ```
 
+You can also configure the OpenLDAP version to install. Currently, only 2.5 and 2.6 are supported. The default is 2.6. You can change this in your playbook with:
+
+```
+ldaptoolbox_openldap_version: "2.5"
+```
+
 
 Give a look at `playbook/group_vars/prod.yml`, `playbook/host_vars/master1.yml` and `playbook/host_vars/master2.yml` for variable customization
 You can also use `--extra-vars variable=value` at the command line for overloading any variable.
