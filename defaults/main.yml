@@ -3,6 +3,9 @@
 # Defaults variables for OpenLDAP role
 ################################################################################
 
+# default OpenLDAP version
+ldaptoolbox_openldap_version: "2.6"
+
 # Deploy certificate
 ldaptoolbox_openldap_deploy_certificates: false
 
@@ -12,7 +15,7 @@ ldaptoolbox_openldap_apt_key_url: "https://ltb-project.org/documentation/_static
 ldaptoolbox_openldap_apt_key_id: "3FC3FD92ABA3975D2BEB95A70AC51F926D45BFC5"
 ldaptoolbox_openldap_apt_repo_filename: "ltb-project-openldap"
 ldaptoolbox_openldap_apt_keyrings_path: /usr/share/keyrings
-ldaptoolbox_openldap_apt_repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/ltb-project-openldap.gpg] http://ltb-project.org/debian/openldap26/bookworm bookworm main"
+ldaptoolbox_openldap_apt_repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/ltb-project-openldap.gpg] http://ltb-project.org/debian/openldap{{ '25' if ldaptoolbox_openldap_version == '2.5' else '26' }}/bookworm bookworm main"
 ldaptoolbox_openldap_apt_validate_certs: "true"
 
 # Packages
