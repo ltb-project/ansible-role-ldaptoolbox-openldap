@@ -47,6 +47,7 @@
   ansible.builtin.user:
     name: "{{ ldaptoolbox_openldap_configuration_owner }}"
     groups: "{{ ldaptoolbox_openldap_sslgroup }}"
+    append: "yes"
     state: present
   when: ( ldaptoolbox_openldap_olcTLSCertificateFile is defined ) and ( ldaptoolbox_openldap_olcTLSCertificateFile )
 
