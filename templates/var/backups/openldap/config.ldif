@@ -26,6 +26,7 @@ olcLocalSSF: 71
 olcLogFile: {{ ldaptoolbox_openldap_olcLogFile }}
 olcLogFileOnly: TRUE
 olcLogFileRotate: {{ ldaptoolbox_openldap_olcLogFileRotate }}
+olcLogFileFormat: {{ ldaptoolbox_openldap_olcLogFileFormat }}
 {% endif %}
 olcLogLevel: {{ ldaptoolbox_openldap_olcLogLevel }}
 olcMaxFilterDepth: 1000

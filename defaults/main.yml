@@ -61,6 +61,7 @@ ldaptoolbox_openldap_olcTLSProtocolMin: 3.3
 ldaptoolbox_openldap_olcLogLevel: stats
 ldaptoolbox_openldap_olcLogFile: "/var/log/slapd-ltb/slapd.log"
 ldaptoolbox_openldap_olcLogFileRotate: "30 1024 24"
+ldaptoolbox_openldap_olcLogFileFormat: "syslog-localtime"
 
 # Size limit
 ldaptoolbox_openldap_olcSizeLimit: 1000
