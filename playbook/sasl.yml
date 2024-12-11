@@ -1,0 +1,13 @@
+########################################################################################################
+# example of playbook for installing and configuring SASL
+########################################################################################################
+---
+- hosts: prod
+  remote_user: root
+  vars_files:
+    - credentials-vault.yml
+  tasks:
+    - name: Installing and configuring SASL for OpenLDAP
+      include_role:
+        name: ansible-role-ldaptoolbox-openldap
+        tasks_from: sasl

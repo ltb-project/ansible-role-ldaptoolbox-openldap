@@ -1,0 +1,90 @@
+
+- name: install cyrus sasl packages for red-hat
+  package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - cyrus-sasl
+    - cyrus-sasl-ldap
+  when: ( ansible_os_family == "RedHat" )
+
+- name: install cyrus sasl packages for debian
+  package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - libsasl2-modules-ldap
+    - sasl2-bin
+  when: ansible_os_family == "Debian"
+
+- name: Configure ldap mode in sasl startup options for red-hat
+  ansible.builtin.lineinfile:
+    path: /etc/sysconfig/saslauthd
+    regexp: '^MECH='
+    line: MECH=ldap
+  when: ( ansible_os_family == "RedHat" )
+
+- name: Configure saslauthd.conf in sasl startup options for red-hat
+  ansible.builtin.lineinfile:
+    path: /etc/sysconfig/saslauthd
+    regexp: '^FLAGS='
+    line: FLAGS="-O /etc/saslauthd.conf"
+  when: ( ansible_os_family == "RedHat" )
+
+- name: Configure ldap mode in sasl startup options for debian
+  ansible.builtin.lineinfile:
+    path: /etc/default/saslauthd
+    regexp: '^MECHANISMS='
+    line: MECHANISMS=ldap
+  when: ansible_os_family == "Debian"
+
+- name: Configure saslauthd.conf in sasl startup options for debian
+  ansible.builtin.lineinfile:
+    path: /etc/default/saslauthd
+    regexp: '^MECH_OPTIONS='
+    line: MECH_OPTIONS="/etc/saslauthd.conf"
+  when: ansible_os_family == "Debian"
+
+- name: Configure general sasl startup options for debian
+  ansible.builtin.lineinfile:
+    path: /etc/default/saslauthd
+    regexp: '^OPTIONS='
+    line: OPTIONS="-r -c -m /var/run/saslauthd"
+  when: ansible_os_family == "Debian"
+
+- name: Enable saslauthd at startup
+  ansible.builtin.systemd_service:
+    name: saslauthd
+    enabled: true
+
+- name: deploy saslauthd.conf template
+  ansible.builtin.template:
+    src: "./etc/saslauthd.conf.j2"
+    dest: "/etc/saslauthd.conf"
+    owner: "root"
+    group: "root"
+    mode: "640"
+
+- name: deploy slapd.conf sasl file
+  ansible.builtin.copy:
+    src: "./ldaptoolbox.oldap/usr/lib64/sasl2/slapd.conf"
+    dest: "/usr/lib64/sasl2/slapd.conf"
+    owner: "root"
+    group: "root"
+    mode: "644"
+
+- name: Adding user ldap to group saslauth
+  ansible.builtin.user:
+    name: "ldap"
+    groups: "saslauth"
+    append: "yes"
+
+- name: Restart saslauthd
+  ansible.builtin.systemd_service:
+    name: "saslauthd"
+    state: restarted
+
+- name: Restart slapd-ltb
+  ansible.builtin.systemd_service:
+    name: "slapd-ltb"
+    state: restarted
