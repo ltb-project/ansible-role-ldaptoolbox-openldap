@@ -9,38 +9,38 @@
     - certificates-vault.yml
   vars:
     # Define suffix
-    - ldaptoolbox_openldap_suffix: "dc=my-organization,dc=com"
+    ldaptoolbox_openldap_suffix: "dc=my-organization,dc=com"
     # include extra schema
-    - ldaptoolbox_openldap_custom_schema_srcdir: "{{ playbook_dir }}/files/ldaptoolbox.oldap/usr/local/openldap/etc/openldap/schema"
-    - ldaptoolbox_openldap_custom_schema_list: [ custom.ldif ]
+    ldaptoolbox_openldap_custom_schema_srcdir: "{{ playbook_dir }}/files/ldaptoolbox.oldap/usr/local/openldap/etc/openldap/schema"
+    ldaptoolbox_openldap_custom_schema_list: [ custom.ldif ]
     # deploy certificates
-    - ldaptoolbox_openldap_deploy_certificates: true
-    - ldaptoolbox_openldap_olcTLSCACertificateFile: "{{ '/usr/local/openldap/etc/openldap/certs/ca.crt' }}"
-    - ldaptoolbox_openldap_olcTLSCertificateFile: "{{ '/usr/local/openldap/etc/openldap/certs/openldap.crt' }}"
-    - ldaptoolbox_openldap_olcTLSCertificateKeyFile: "{{ '/usr/local/openldap/etc/openldap/certs/openldap.key' }}"
-    - ldaptoolbox_openldap_olcTLSDHParamFile: "{{ '/usr/local/openldap/etc/openldap/certs/dhparams' }}"
+    ldaptoolbox_openldap_deploy_certificates: true
+    ldaptoolbox_openldap_olcTLSCACertificateFile: "{{ '/usr/local/openldap/etc/openldap/certs/ca.crt' }}"
+    ldaptoolbox_openldap_olcTLSCertificateFile: "{{ '/usr/local/openldap/etc/openldap/certs/openldap.crt' }}"
+    ldaptoolbox_openldap_olcTLSCertificateKeyFile: "{{ '/usr/local/openldap/etc/openldap/certs/openldap.key' }}"
+    ldaptoolbox_openldap_olcTLSDHParamFile: "{{ '/usr/local/openldap/etc/openldap/certs/dhparams' }}"
     # Accounts and passwords
-    - ldaptoolbox_openldap_config_olcRootDN: cn=admin,cn=config
-    - ldaptoolbox_openldap_config_olcRootPW_hash: "{{ ldaptoolbox_openldap_config_olcRootPW_hash_vault }}"
-    - ldaptoolbox_openldap_database_olcRootDN: "cn=admin,{{ ldaptoolbox_openldap_suffix }}"
-    - ldaptoolbox_openldap_database_olcRootPW_hash: "{{ ldaptoolbox_openldap_database_olcRootPW_hash_vault }}"
-    - ldaptoolbox_openldap_monitor_olcRootDN: "cn=monitor"
-    - ldaptoolbox_openldap_monitor_olcRootPW_hash: "{{ ldaptoolbox_openldap_monitor_olcRootPW_hash_vault }}"
+    ldaptoolbox_openldap_config_olcRootDN: cn=admin,cn=config
+    ldaptoolbox_openldap_config_olcRootPW_hash: "{{ ldaptoolbox_openldap_config_olcRootPW_hash_vault }}"
+    ldaptoolbox_openldap_database_olcRootDN: "cn=admin,{{ ldaptoolbox_openldap_suffix }}"
+    ldaptoolbox_openldap_database_olcRootPW_hash: "{{ ldaptoolbox_openldap_database_olcRootPW_hash_vault }}"
+    ldaptoolbox_openldap_monitor_olcRootDN: "cn=monitor"
+    ldaptoolbox_openldap_monitor_olcRootPW_hash: "{{ ldaptoolbox_openldap_monitor_olcRootPW_hash_vault }}"
     # No unlimitation
-    - ldaptoolbox_openldap_database_olcLimits:
-         - "dn.base=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth size=unlimited  time=unlimited"
+    ldaptoolbox_openldap_database_olcLimits:
+       - "dn.base=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth size=unlimited  time=unlimited"
     # ACLs from default role variables
     # No replication
-    - ldaptoolbox_openldap_syncrepl: []
+    ldaptoolbox_openldap_syncrepl: []
     # overlay configuration from default role variables
     # Referential integrity
-    - ldaptoolbox_openldap_overlay_refint_olcRefintAttribute: "member"
-    - ldaptoolbox_openldap_overlay_refint_olcRefintNothing: "cn=nothing,{{ ldaptoolbox_openldap_suffix }}"
+    ldaptoolbox_openldap_overlay_refint_olcRefintAttribute: "member"
+    ldaptoolbox_openldap_overlay_refint_olcRefintNothing: "cn=nothing,{{ ldaptoolbox_openldap_suffix }}"
     # Dynamic groups (dynlist)
-    - ldaptoolbox_openldap_overlay_dynlist_olcDlAttrSet: "groupOfURLs memberURL member+memberOf@groupOfNames*"
+    ldaptoolbox_openldap_overlay_dynlist_olcDlAttrSet: "groupOfURLs memberURL member+memberOf@groupOfNames*"
     # Password policy
-    - ldaptoolbox_openldap_overlay_ppolicy_olcPPolicyDefault: "cn=default,ou=ppolicies,{{ ldaptoolbox_openldap_suffix }}"
-    - ldaptoolbox_openldap_overlay_ppolicy_olcPPolicyHashCleartext: "TRUE"
-    - ldaptoolbox_openldap_overlay_ppolicy_olcPPolicyUseLockout: "TRUE"
+    ldaptoolbox_openldap_overlay_ppolicy_olcPPolicyDefault: "cn=default,ou=ppolicies,{{ ldaptoolbox_openldap_suffix }}"
+    ldaptoolbox_openldap_overlay_ppolicy_olcPPolicyHashCleartext: "TRUE"
+    ldaptoolbox_openldap_overlay_ppolicy_olcPPolicyUseLockout: "TRUE"
   roles:
     - ansible-role-ldaptoolbox-openldap
