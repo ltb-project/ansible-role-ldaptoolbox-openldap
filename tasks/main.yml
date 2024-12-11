@@ -41,6 +41,7 @@
     owner: "{{ ldaptoolbox_openldap_configuration_owner }}"
     group: "{{ ldaptoolbox_openldap_configuration_group }}"
   loop: "{{ ldaptoolbox_openldap_custom_schema_list }}"
+  when: ldaptoolbox_openldap_custom_schema_list is defined
 
 - name: load config from file
   ansible.builtin.shell: "{{ ldaptoolbox_openldap_slapd_cli_cmd }} restoreconfig"
