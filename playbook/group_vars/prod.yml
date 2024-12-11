@@ -43,3 +43,7 @@ ldaptoolbox_openldap_syncrepl:
       tls_crlcheck: "none"
       filter: "(objectclass=*)"
       schemachecking: "on"
+ldaptoolbox_openldap_suffix: "dc=my-organization,dc=com"
+ldaptoolbox_openldap_sasl_servers: "ldap://localhost"
+ldaptoolbox_openldap_sasl_binddn: "cn=saslaccount,dc=my-domain,dc=com"
+ldaptoolbox_openldap_sasl_bindpw: "{{ ldaptoolbox_openldap_sasl_bindpw_vault }}"

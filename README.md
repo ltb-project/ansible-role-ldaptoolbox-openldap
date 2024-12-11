@@ -92,6 +92,13 @@ Run the corresponding task with:
 ansible-playbook playbook/monitoring.yml -i playbook/inventory
 ```
 
+Give a look to `playbook/sasl.yml` for an example of playbook that install and deploy sasl for OpenLDAP to delegate authentication to another directory.
+
+Run the corresponding playbook with:
+
+```
+ansible-playbook playbook/sasl.yml -i playbook/inventory --vault-password-file .vault_pass
+```
 
 License
 -------
