@@ -19,6 +19,9 @@ ldap_password: {{ ldaptoolbox_openldap_sasl_bindpw }}
 
 # others
 # ----------------------------------
+{% if ldaptoolbox_openldap_sasl_ca is defined and ldaptoolbox_openldap_sasl_ca %}
+ldap_tls_cacert_file: {{ ldaptoolbox_openldap_sasl_ca }}
+{% endif %}
 ldap_deref: never
 ldap_restart: yes
 ldap_scope: sub
