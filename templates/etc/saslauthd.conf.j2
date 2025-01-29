@@ -2,23 +2,22 @@
 #     CONFIGURATION SASL
 # #############################################
 
-# Liste des serveurs AD disponibles
+# Servers
 # ----------------------------------
-# ldap_servers: ldaps://spar-pont-01.afp.local ldap://spar-ctrl-02.afp.local ldap://spar-ctrl-01.afp.local
 ldap_servers: {{ ldaptoolbox_openldap_sasl_servers }}
 
-# Parametres de recherche sur AD 
+# search parameters
 # ----------------------------------
 ldap_timeout: 10
 ldap_search_base: {{ ldaptoolbox_openldap_sasl_suffix }}
 ldap_filter: sAMAccountName=%u
 
-# Utilisateur pour se connecter a l'AD
+# account credentials
 # ----------------------------------
 ldap_bind_dn: {{ ldaptoolbox_openldap_sasl_binddn }}
 ldap_password: {{ ldaptoolbox_openldap_sasl_bindpw }}
 
-# Autre ...
+# others
 # ----------------------------------
 ldap_deref: never
 ldap_restart: yes
