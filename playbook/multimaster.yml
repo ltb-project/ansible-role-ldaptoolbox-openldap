@@ -56,7 +56,7 @@
     ldaptoolbox_olcPasswordHash: "{SSHA256}"
     # Access rights
     ldaptoolbox_openldap_access_list:
-       - to attrs=userPassword  by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" =wxd  by group/groupOfNames/member.exact="cn=admin,ou=groups,{{ ldaptoolbox_openldap_suffix }}" =wxd  by dn.base="uid=syncrepl,ou=accounts,ou=infrastructure,{{ ldaptoolbox_openldap_suffix }}" read by self =wxd  by * auth
+       - to attrs=userPassword  by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" =wxd  by group/groupOfNames/member.exact="cn=admin,ou=groups,{{ ldaptoolbox_openldap_suffix }}" =wxd  by dn.base="uid=syncrepl,ou=accounts,ou=infrastructure,{{ ldaptoolbox_openldap_suffix }}" read  by self =wxd  by * auth
        - to *  by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" manage  by group/groupOfNames/member.exact="cn=admin,ou=groups,{{ ldaptoolbox_openldap_suffix }}" write  by users read
     # Indexes definition
     ldaptoolbox_openldap_database_olcDbIndexes:
