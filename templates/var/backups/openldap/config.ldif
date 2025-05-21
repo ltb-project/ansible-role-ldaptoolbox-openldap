@@ -111,8 +111,7 @@ olcSortVals: {{ ldaptoolbox_openldap_olcSortVals }}
 dn: olcDatabase={0}config,cn=config
 objectClass: olcDatabaseConfig
 olcDatabase: {0}config
-olcAccess: {0}to attrs=userPassword  by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" =wxd  by * auth
-olcAccess: {1}to *  by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" manage
+olcAccess: {0}to *  by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" manage
 olcAddContentAcl: TRUE
 olcLastMod: TRUE
 olcLastBind: TRUE
@@ -202,7 +201,7 @@ objectClass: olcDatabaseConfig
 olcDatabase: {2}monitor
 olcRootDN: {{ ldaptoolbox_openldap_monitor_olcRootDN }}
 olcRootPW: {{ ldaptoolbox_openldap_monitor_olcRootPW_hash }}
-olcAccess: {0}to *  by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" manage
+olcAccess: {0}to *  by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" read
 olcAddContentAcl: FALSE
 olcLastMod: TRUE
 olcLastBind: TRUE
