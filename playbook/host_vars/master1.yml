@@ -8,7 +8,7 @@ ldaptoolbox_openldap_syncrepl:
     tlskey: "{{ ldaptoolbox_openldap_olcTLSCertificateKeyFile }}"
     tlscacert: "{{ ldaptoolbox_openldap_olcTLSCACertificateFile }}"
     tlsreqcert: "demand"
-    binddn: "uid=replicationmaster,ou=replication,ou=special users,{{ ldaptoolbox_openldap_suffix }}"
+    binddn: "uid=syncrepl,ou=accounts,ou=infrastructure,{{ ldaptoolbox_openldap_suffix }}"
     password: "{{ ldaptoolbox_openldap_syncrepl_password_vault }}"
     searchbase: "{{ ldaptoolbox_openldap_suffix }}"
     scope: "sub"
